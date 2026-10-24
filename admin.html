@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Undangan Pernikahan</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            50: '#FAF7F2',
+                            100: '#F5EFE6',
+                            200: '#EADBC8',
+                            300: '#DBC4F0',
+                        },
+                        sage: {
+                            100: '#E2EBE4',
+                            300: '#B2C8BA',
+                            500: '#6A8572',
+                            700: '#3D5243',
+                            900: '#2C3A2E'
+                        },
+                        gold: {
+                            light: '#F4E0A5',
+                            DEFAULT: '#C5A059',
+                            dark: '#9A7732'
+                        },
+                        blush: {
+                            100: '#F9E8E8',
+                            300: '#E8C5C8',
+                            500: '#D89A9E'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                        script: ['Great Vibes', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FAF7F2;
+            color: #2C3A2E;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+        }
+
+        .bg-floral-pattern {
+            background-color: #FAF7F2;
+            background-image: radial-gradient(#C5A059 0.4px, transparent 0.4px), radial-gradient(#6A8572 0.4px, #FAF7F2 0.4px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            box-shadow: 0 15px 35px -5px rgba(61, 82, 67, 0.08), 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Toast styling */
+        #toast {
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease-in-out;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-floral-pattern antialiased selection:bg-gold selection:text-white pb-16">
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-sage-900 text-white px-6 py-3 rounded-full shadow-2xl z-[9999] flex items-center gap-3 border border-gold/40 text-xs md:text-sm font-semibold">
+        <i class="fas fa-check-circle text-gold text-base"></i>
+        <span id="toast-message">Notifikasi</span>
+    </div>
+
+    <!-- 1. LOGIN PIN GATE SCREEN (Tampil jika belum login) -->
+    <div id="auth-gate" class="fixed inset-0 z-50 bg-sage-900/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 text-center space-y-6 shadow-2xl border border-gold/40">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-sage-700 text-gold flex items-center justify-center text-2xl shadow-lg border border-gold/30">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            
+            <div>
+                <h2 class="font-serif font-bold text-2xl text-sage-900">Keamanan Admin</h2>
+                <p class="text-xs text-gray-600 mt-1">Masukkan PIN keamanan untuk mengakses panel administrasi</p>
+            </div>
+
+            <form id="pin-form" class="space-y-4">
+                <div>
+                    <input type="password" id="admin-pin-input" maxlength="10" placeholder="Masukkan PIN (Default: 1234)" autofocus required class="w-full text-center tracking-widest text-lg font-mono px-4 py-3 bg-white border border-gold/40 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none shadow-inner">
+                </div>
+                <div id="pin-error" class="hidden text-xs text-red-600 font-semibold">
+                    <i class="fas fa-exclamation-circle"></i> PIN salah! Akses ditolak.
+                </div>
+                <button type="submit" class="w-full bg-sage-700 hover:bg-sage-900 text-white text-xs font-bold uppercase tracking-wider py-3.5 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-unlock text-gold-light"></i>
+                    <span>Masuk ke Panel Admin</span>
+                </button>
+            </form>
+
+            <div class="pt-4 border-t border-gold/20">
+                <a href="index.html" class="inline-flex items-center gap-2 text-xs font-semibold text-sage-700 hover:text-gold transition">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali ke Halaman Undangan</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN ADMIN DASHBOARD (Tampil setelah terotentikasi) -->
+    <div id="admin-dashboard" class="hidden">
+        
+        <!-- Navigation Header -->
+        <header class="bg-sage-900 text-cream-100 border-b border-gold/30 sticky top-0 z-40 shadow-md">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gold/20 border border-gold/40 flex items-center justify-center text-gold text-lg">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-serif font-bold text-lg md:text-xl text-white">Panel Admin Undangan</h1>
+                        <p class="text-[11px] text-cream-200">Kelola data undangan & generator link tamu pernikahan</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <a href="index.html" target="_blank" class="bg-cream-100/10 hover:bg-cream-100/20 text-cream-100 text-xs font-semibold py-2 px-4 rounded-xl border border-white/20 transition flex items-center gap-2">
+                        <i class="fas fa-external-link-alt text-gold-light"></i>
+                        <span>Lihat Undangan</span>
+                    </a>
+                    <button onclick="logoutAdmin()" class="bg-red-500/20 hover:bg-red-500/30 text-red-200 hover:text-white text-xs font-semibold py-2 px-3 rounded-xl border border-red-500/30 transition flex items-center gap-1.5" title="Kunci / Keluar">
+                        <i class="fas fa-lock"></i>
+                        <span>Kunci</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+            
+            <!-- SECTION 1: GENERATOR LINK UNDANGAN (SHARE LINK) -->
+            <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                <div class="flex items-center gap-3 border-b border-gold/20 pb-4 mb-6">
+                    <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-serif font-bold text-xl text-sage-900">Generator Link Undangan (Share Link)</h2>
+                        <p class="text-xs text-gray-600">Buat tautan personalisasi dengan nama tamu untuk dibagikan via WhatsApp atau media sosial.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="admin-guest-input" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Nama Tamu</label>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" id="admin-guest-input" placeholder="Masukkan nama tamu, misal: Bapak Budi Santoso & Keluarga" class="flex-1 px-4 py-2.5 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition">
+                            <button type="button" onclick="generateGuestLink()" class="bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-xl shadow transition duration-200 flex items-center justify-center gap-2">
+                                <i class="fas fa-magic text-gold-light"></i>
+                                <span>Generate Link</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="admin-generated-link" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Hasil Tautan Undangan</label>
+                        <textarea id="admin-generated-link" readonly rows="2" placeholder="Tautan undangan akan muncul di sini setelah Anda mengklik tombol 'Generate Link'..." class="w-full px-4 py-2.5 text-xs font-mono bg-cream-50/70 border border-gold/30 rounded-xl text-sage-900 resize-none focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <p class="text-[11px] text-gray-500 italic">
+                            *Tautan ini akan langsung mengisi teks salam "Kepada Yth." di halaman depan undangan.
+                        </p>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="shareWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow transition flex items-center gap-2">
+                                <i class="fab fa-whatsapp text-sm"></i>
+                                <span>Kirim WA</span>
+                            </button>
+                            <button type="button" onclick="copyGuestLink()" class="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-white text-xs font-bold uppercase tracking-wider py-2.5 px-5 rounded-xl shadow transition flex items-center gap-2">
+                                <i class="far fa-copy text-sm"></i>
+                                <span>Salin Link</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: FORM PENGATURAN DATA DINAMIS (FIREBASE FIRESTORE) -->
+            <form id="admin-form" class="space-y-8">
+                
+                <!-- 2.1 DATA COVER -->
+                <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
+                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
+                        <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Data Cover Utama</h2>
+                            <p class="text-xs text-gray-600">Atur gambar latar belakang, foto pasangan cover, dan teks tanggal pembuka.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Link Foto Cover Utama (Background)</label>
+                            <input type="url" id="admin-cover-bg-url" class="w-full px-4 py-2 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Link Foto Bingkai Arch Cover</label>
+                            <input type="url" id="admin-cover-arch-url" class="w-full px-4 py-2 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="https://...">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Teks Tanggal di Cover Utama</label>
+                            <input type="text" id="admin-cover-date-text" class="w-full px-4 py-2 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="Contoh: Minggu, 31 Desember 2026">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.2 DATA MEMPELAI -->
+                <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
+                        <div class="w-9 h-9 rounded-xl bg-blush-500/20 text-blush-500 flex items-center justify-center text-base">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Data Mempelai</h2>
+                            <p class="text-xs text-gray-600">Biodata lengkap mempelai pria & wanita beserta orang tua dan foto profil.</p>
+                        </div>
+                    </div>
+
+                    <!-- Mempelai Pria -->
+                    <div class="bg-sage-50/70 p-5 rounded-2xl border border-sage-200 space-y-3">
+                        <div class="flex items-center gap-2 text-sage-900 font-bold text-xs uppercase tracking-wider">
+                            <i class="fas fa-mars text-gold"></i>
+                            <span>Mempelai Pria</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Lengkap Pria</label>
+                                <input type="text" id="admin-groom-name" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Romeo Montague, S.T.">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Link Foto Profil Pria</label>
+                                <input type="url" id="admin-groom-photo" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Ayah Pria</label>
+                                <input type="text" id="admin-groom-father" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Lord Montague">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Ibu Pria</label>
+                                <input type="text" id="admin-groom-mother" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Lady Montague">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mempelai Wanita -->
+                    <div class="bg-blush-100/40 p-5 rounded-2xl border border-blush-300/50 space-y-3">
+                        <div class="flex items-center gap-2 text-sage-900 font-bold text-xs uppercase tracking-wider">
+                            <i class="fas fa-venus text-blush-500"></i>
+                            <span>Mempelai Wanita</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Lengkap Wanita</label>
+                                <input type="text" id="admin-bride-name" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Juliet Capulet, S.Ked">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Link Foto Profil Wanita</label>
+                                <input type="url" id="admin-bride-photo" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Ayah Wanita</label>
+                                <input type="text" id="admin-bride-father" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Lord Capulet">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Ibu Wanita</label>
+                                <input type="text" id="admin-bride-mother" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Lady Capulet">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.3 DATA ACARA (AKAD & RESEPSI) -->
+                <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
+                        <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                            <i class="far fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Data Rangkaian Acara</h2>
+                            <p class="text-xs text-gray-600">Jadwal, waktu, nama lokasi, alamat, dan link Google Maps untuk Akad & Resepsi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Akad Nikah -->
+                    <div class="bg-cream-50/80 p-5 rounded-2xl border border-gold/20 space-y-3">
+                        <div class="flex items-center gap-2 text-sage-900 font-bold text-xs uppercase tracking-wider">
+                            <i class="fas fa-handshake text-gold"></i>
+                            <span>Akad Nikah</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Tanggal Acara</label>
+                                <input type="text" id="admin-akad-date" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Minggu, 31 Desember 2026">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Jam Mulai - Selesai</label>
+                                <input type="text" id="admin-akad-time" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Pukul 08.00 WIB - 10.00 WIB">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Lokasi</label>
+                                <input type="text" id="admin-akad-location" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Masjid Agung Al-Barkah">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Alamat Lengkap Lokasi</label>
+                                <input type="text" id="admin-akad-address" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Link Google Maps</label>
+                                <input type="url" id="admin-akad-maps" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://maps.google.com/...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resepsi Pernikahan -->
+                    <div class="bg-cream-50/80 p-5 rounded-2xl border border-gold/20 space-y-3">
+                        <div class="flex items-center gap-2 text-sage-900 font-bold text-xs uppercase tracking-wider">
+                            <i class="fas fa-glass-cheers text-gold"></i>
+                            <span>Resepsi Pernikahan</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Tanggal Acara</label>
+                                <input type="text" id="admin-resepsi-date" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Minggu, 31 Desember 2026">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Jam Mulai - Selesai</label>
+                                <input type="text" id="admin-resepsi-time" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Pukul 11.00 WIB - 14.00 WIB">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Lokasi</label>
+                                <input type="text" id="admin-resepsi-location" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Grand Ballroom Hotel Santika">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Alamat Lengkap Lokasi</label>
+                                <input type="text" id="admin-resepsi-address" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Link Google Maps</label>
+                                <input type="url" id="admin-resepsi-maps" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://maps.google.com/...">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.4 GALERI FOTO (6 SLOT) -->
+                <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
+                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
+                        <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                            <i class="fas fa-camera-retro"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Galeri Foto (6 Slot Input URL)</h2>
+                            <p class="text-xs text-gray-600">Masukkan tautan gambar langsung (URL) untuk 6 foto di album kenangan.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 1 (URL)</label>
+                            <input type="url" id="admin-gallery-1" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 2 (URL)</label>
+                            <input type="url" id="admin-gallery-2" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 3 (URL)</label>
+                            <input type="url" id="admin-gallery-3" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 4 (URL)</label>
+                            <input type="url" id="admin-gallery-4" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 5 (URL)</label>
+                            <input type="url" id="admin-gallery-5" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 6 (URL)</label>
+                            <input type="url" id="admin-gallery-6" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.5 TANDA KASIH (REKENING BANK) -->
+                <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
+                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
+                        <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Tanda Kasih (Rekening Bank)</h2>
+                            <p class="text-xs text-gray-600">Atur 2 nomor rekening tujuan transfer amplop digital.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Rekening 1 -->
+                        <div class="bg-blue-50/60 border border-blue-200/70 p-5 rounded-2xl space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
+                                <i class="fas fa-credit-card"></i> Rekening 1
+                            </h3>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Bank 1</label>
+                                <input type="text" id="admin-bank1-name" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="BCA">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nomor Rekening 1</label>
+                                <input type="text" id="admin-bank1-number" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="123 456 7890">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Atas Nama 1</label>
+                                <input type="text" id="admin-bank1-owner" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Romeo Montague">
+                            </div>
+                        </div>
+
+                        <!-- Rekening 2 -->
+                        <div class="bg-amber-50/60 border border-amber-200/70 p-5 rounded-2xl space-y-3">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                                <i class="fas fa-credit-card"></i> Rekening 2
+                            </h3>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Bank 2</label>
+                                <input type="text" id="admin-bank2-name" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="MANDIRI">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nomor Rekening 2</label>
+                                <input type="text" id="admin-bank2-number" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="987 654 3210">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Atas Nama 2</label>
+                                <input type="text" id="admin-bank2-owner" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Juliet Capulet">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ACTION BUTTONS BAR -->
+                <div class="glass-panel rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky bottom-4 z-30 shadow-2xl border-2 border-gold/40">
+                    <button type="button" onclick="resetToDefaults()" class="text-xs font-semibold text-gray-600 hover:text-red-600 transition flex items-center gap-1.5">
+                        <i class="fas fa-undo"></i>
+                        <span>Reset ke Default</span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <a href="index.html" class="w-full sm:w-auto text-center px-6 py-3 rounded-xl border border-gray-300 hover:bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider transition">
+                            Batal
+                        </a>
+                        <button type="submit" id="admin-save-btn" class="w-full sm:w-auto bg-sage-700 hover:bg-sage-900 text-white text-xs font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
+                            <i class="far fa-save text-gold-light"></i>
+                            <span>Simpan Semua Perubahan</span>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </main>
+    </div>
+
+    <!-- FIREBASE & ADMIN LOGIC SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-invite-app';
+        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+
+        let app, db, auth;
+        let weddingDocRef = null;
+
+        try {
+            const firebaseConfig = JSON.parse(firebaseConfigStr);
+            if(Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                weddingDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'weddingData', 'main');
+            }
+        } catch (e) {
+            console.warn("Firebase fallback mode enabled.", e);
+        }
+
+        // Default Wedding Content Structure
+        const defaultWeddingData = {
+            cover: {
+                bgUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80",
+                archUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
+                dateText: "Minggu, 31 Desember 2026"
+            },
+            groom: {
+                name: "Romeo Montague, S.T.",
+                father: "Lord Montague",
+                mother: "Lady Montague",
+                photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80"
+            },
+            bride: {
+                name: "Juliet Capulet, S.Ked",
+                father: "Lord Capulet",
+                mother: "Lady Capulet",
+                photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80"
+            },
+            akad: {
+                date: "Minggu, 31 Desember 2026",
+                time: "Pukul 08.00 WIB - 10.00 WIB",
+                location: "Masjid Agung Al-Barkah",
+                address: "Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi",
+                maps: "https://maps.google.com"
+            },
+            resepsi: {
+                date: "Minggu, 31 Desember 2026",
+                time: "Pukul 11.00 WIB - 14.00 WIB",
+                location: "Grand Ballroom Hotel Santika",
+                address: "Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi",
+                maps: "https://maps.google.com"
+            },
+            gallery: [
+                "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
+            ],
+            bank1: {
+                name: "BCA",
+                number: "123 456 7890",
+                owner: "Romeo Montague"
+            },
+            bank2: {
+                name: "MANDIRI",
+                number: "987 654 3210",
+                owner: "Juliet Capulet"
+            }
+        };
+
+        window.defaultWeddingData = defaultWeddingData;
+
+        // Populate Form Fields
+        function populateAdminForm(data) {
+            const d = data || defaultWeddingData;
+
+            // Cover
+            document.getElementById('admin-cover-bg-url').value = d.cover?.bgUrl || '';
+            document.getElementById('admin-cover-arch-url').value = d.cover?.archUrl || '';
+            document.getElementById('admin-cover-date-text').value = d.cover?.dateText || '';
+
+            // Groom
+            document.getElementById('admin-groom-name').value = d.groom?.name || '';
+            document.getElementById('admin-groom-photo').value = d.groom?.photo || '';
+            document.getElementById('admin-groom-father').value = d.groom?.father || '';
+            document.getElementById('admin-groom-mother').value = d.groom?.mother || '';
+
+            // Bride
+            document.getElementById('admin-bride-name').value = d.bride?.name || '';
+            document.getElementById('admin-bride-photo').value = d.bride?.photo || '';
+            document.getElementById('admin-bride-father').value = d.bride?.father || '';
+            document.getElementById('admin-bride-mother').value = d.bride?.mother || '';
+
+            // Akad
+            document.getElementById('admin-akad-date').value = d.akad?.date || '';
+            document.getElementById('admin-akad-time').value = d.akad?.time || '';
+            document.getElementById('admin-akad-location').value = d.akad?.location || '';
+            document.getElementById('admin-akad-address').value = d.akad?.address || '';
+            document.getElementById('admin-akad-maps').value = d.akad?.maps || '';
+
+            // Resepsi
+            document.getElementById('admin-resepsi-date').value = d.resepsi?.date || '';
+            document.getElementById('admin-resepsi-time').value = d.resepsi?.time || '';
+            document.getElementById('admin-resepsi-location').value = d.resepsi?.location || '';
+            document.getElementById('admin-resepsi-address').value = d.resepsi?.address || '';
+            document.getElementById('admin-resepsi-maps').value = d.resepsi?.maps || '';
+
+            // Gallery
+            if (Array.isArray(d.gallery)) {
+                for (let i = 0; i < 6; i++) {
+                    const el = document.getElementById(`admin-gallery-${i + 1}`);
+                    if (el) el.value = d.gallery[i] || '';
+                }
+            }
+
+            // Banks
+            document.getElementById('admin-bank1-name').value = d.bank1?.name || '';
+            document.getElementById('admin-bank1-number').value = d.bank1?.number || '';
+            document.getElementById('admin-bank1-owner').value = d.bank1?.owner || '';
+
+            document.getElementById('admin-bank2-name').value = d.bank2?.name || '';
+            document.getElementById('admin-bank2-number').value = d.bank2?.number || '';
+            document.getElementById('admin-bank2-owner').value = d.bank2?.owner || '';
+        }
+
+        window.populateAdminForm = populateAdminForm;
+
+        window.resetToDefaults = function() {
+            if (confirm("Apakah Anda yakin ingin mengisi form dengan data default?")) {
+                populateAdminForm(defaultWeddingData);
+                showToast("Form di-reset ke nilai default.");
+            }
+        };
+
+        // 1. Fungsi getDoc untuk merender data saat web admin dimuat
+        async function loadAdminData() {
+            let localData = null;
+            try {
+                const stored = localStorage.getItem('wedding_custom_data');
+                if (stored) localData = JSON.parse(stored);
+            } catch(e) {}
+
+            populateAdminForm(localData || defaultWeddingData);
+
+            if (!db || !weddingDocRef) return;
+
+            try {
+                if (auth) {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                }
+
+                const docSnap = await getDoc(weddingDocRef);
+                if (docSnap.exists()) {
+                    const firestoreData = docSnap.data();
+                    populateAdminForm(firestoreData);
+                    try {
+                        localStorage.setItem('wedding_custom_data', JSON.stringify(firestoreData));
+                    } catch(e) {}
+                }
+            } catch (err) {
+                console.warn("Koneksi Firestore gagal, menggunakan data lokal:", err);
+            }
+        }
+
+        // 2. Fungsi updateDoc untuk menyimpan data baru
+        async function saveWeddingData(newData) {
+            const saveBtn = document.getElementById('admin-save-btn');
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> <span>Menyimpan...</span>';
+            }
+
+            try {
+                // Simpan ke localStorage terlebih dahulu agar instan
+                try {
+                    localStorage.setItem('wedding_custom_data', JSON.stringify(newData));
+                } catch(e) {}
+
+                // Simpan ke Firebase Firestore jika terhubung
+                if (db && weddingDocRef) {
+                    const docSnap = await getDoc(weddingDocRef);
+                    if (docSnap.exists()) {
+                        await updateDoc(weddingDocRef, newData);
+                    } else {
+                        await setDoc(weddingDocRef, newData);
+                    }
+                }
+
+                showToast("Data undangan berhasil disimpan!");
+            } catch (err) {
+                console.error("Gagal update data Firestore:", err);
+                showToast("Tersimpan di lokal (Koneksi Firebase gagal).");
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="far fa-save text-gold-light"></i> <span>Simpan Semua Perubahan</span>';
+                }
+            }
+        }
+
+        window.loadAdminData = loadAdminData;
+
+        // Form Submit Handler
+        const adminForm = document.getElementById('admin-form');
+        adminForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const d = defaultWeddingData;
+
+            const updatedData = {
+                cover: {
+                    bgUrl: document.getElementById('admin-cover-bg-url').value.trim() || d.cover.bgUrl,
+                    archUrl: document.getElementById('admin-cover-arch-url').value.trim() || d.cover.archUrl,
+                    dateText: document.getElementById('admin-cover-date-text').value.trim() || d.cover.dateText
+                },
+                groom: {
+                    name: document.getElementById('admin-groom-name').value.trim() || d.groom.name,
+                    photo: document.getElementById('admin-groom-photo').value.trim() || d.groom.photo,
+                    father: document.getElementById('admin-groom-father').value.trim() || d.groom.father,
+                    mother: document.getElementById('admin-groom-mother').value.trim() || d.groom.mother
+                },
+                bride: {
+                    name: document.getElementById('admin-bride-name').value.trim() || d.bride.name,
+                    photo: document.getElementById('admin-bride-photo').value.trim() || d.bride.photo,
+                    father: document.getElementById('admin-bride-father').value.trim() || d.bride.father,
+                    mother: document.getElementById('admin-bride-mother').value.trim() || d.bride.mother
+                },
+                akad: {
+                    date: document.getElementById('admin-akad-date').value.trim() || d.akad.date,
+                    time: document.getElementById('admin-akad-time').value.trim() || d.akad.time,
+                    location: document.getElementById('admin-akad-location').value.trim() || d.akad.location,
+                    address: document.getElementById('admin-akad-address').value.trim() || d.akad.address,
+                    maps: document.getElementById('admin-akad-maps').value.trim() || d.akad.maps
+                },
+                resepsi: {
+                    date: document.getElementById('admin-resepsi-date').value.trim() || d.resepsi.date,
+                    time: document.getElementById('admin-resepsi-time').value.trim() || d.resepsi.time,
+                    location: document.getElementById('admin-resepsi-location').value.trim() || d.resepsi.location,
+                    address: document.getElementById('admin-resepsi-address').value.trim() || d.resepsi.address,
+                    maps: document.getElementById('admin-resepsi-maps').value.trim() || d.resepsi.maps
+                },
+                gallery: [
+                    document.getElementById('admin-gallery-1').value.trim() || d.gallery[0],
+                    document.getElementById('admin-gallery-2').value.trim() || d.gallery[1],
+                    document.getElementById('admin-gallery-3').value.trim() || d.gallery[2],
+                    document.getElementById('admin-gallery-4').value.trim() || d.gallery[3],
+                    document.getElementById('admin-gallery-5').value.trim() || d.gallery[4],
+                    document.getElementById('admin-gallery-6').value.trim() || d.gallery[5]
+                ],
+                bank1: {
+                    name: document.getElementById('admin-bank1-name').value.trim() || d.bank1.name,
+                    number: document.getElementById('admin-bank1-number').value.trim() || d.bank1.number,
+                    owner: document.getElementById('admin-bank1-owner').value.trim() || d.bank1.owner
+                },
+                bank2: {
+                    name: document.getElementById('admin-bank2-name').value.trim() || d.bank2.name,
+                    number: document.getElementById('admin-bank2-number').value.trim() || d.bank2.number,
+                    owner: document.getElementById('admin-bank2-owner').value.trim() || d.bank2.owner
+                }
+            };
+
+            await saveWeddingData(updatedData);
+        });
+
+        // Initialize admin data
+        loadAdminData();
+    </script>
+
+    <!-- GENERAL INTERACTIVE SCRIPT -->
+    <script>
+        // 1. PIN Security & Auth Gate Management
+        function checkAuth() {
+            const isAuth = sessionStorage.getItem('admin_authenticated');
+            const authGate = document.getElementById('auth-gate');
+            const dashboard = document.getElementById('admin-dashboard');
+
+            if (isAuth === 'true') {
+                authGate.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+            } else {
+                authGate.classList.remove('hidden');
+                dashboard.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('pin-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pinInput = document.getElementById('admin-pin-input');
+            const errorMsg = document.getElementById('pin-error');
+            
+            if (pinInput.value === '1234') {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                errorMsg.classList.add('hidden');
+                checkAuth();
+                showToast("Berhasil masuk ke Panel Admin!");
+            } else {
+                errorMsg.classList.remove('hidden');
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        });
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('admin_authenticated');
+            checkAuth();
+            showToast("Anda telah keluar dari Panel Admin.");
+        }
+
+        // 2. Helper Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgSpan = document.getElementById('toast-message');
+            msgSpan.innerText = msg;
+            
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 3. Generator Link Undangan (Share Link)
+        function getInvitationBaseUrl() {
+            let url = window.location.href.split('?')[0].split('#')[0];
+            if (url.endsWith('admin.html')) {
+                url = url.substring(0, url.length - 'admin.html'.length) + 'index.html';
+            } else {
+                url = url.replace(/\/[^/]*$/, '/index.html');
+            }
+            return url;
+        }
+
+        function generateGuestLink() {
+            const input = document.getElementById('admin-guest-input');
+            const guestName = input.value.trim();
+            if (!guestName) {
+                showToast("Silakan masukkan nama tamu terlebih dahulu!");
+                input.focus();
+                return;
+            }
+
+            const baseUrl = getInvitationBaseUrl();
+            const generatedLink = `${baseUrl}?to=${encodeURIComponent(guestName)}`;
+
+            const resultTextarea = document.getElementById('admin-generated-link');
+            resultTextarea.value = generatedLink;
+            showToast("Link undangan berhasil dibuat!");
+        }
+
+        function copyGuestLink() {
+            const linkTextarea = document.getElementById('admin-generated-link');
+            const linkToCopy = linkTextarea.value.trim();
+
+            if (!linkToCopy) {
+                showToast("Belum ada link! Masukkan nama tamu lalu klik 'Generate Link'.");
+                return;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(linkToCopy).then(() => {
+                    showToast("Link disalin!");
+                }).catch(() => {
+                    fallbackCopy(linkToCopy);
+                });
+            } else {
+                fallbackCopy(linkToCopy);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const temp = document.createElement("textarea");
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                showToast("Link disalin!");
+            } catch (e) {
+                showToast("Gagal menyalin link.");
+            }
+            document.body.removeChild(temp);
+        }
+
+        function shareWhatsApp() {
+            const linkTextarea = document.getElementById('admin-generated-link');
+            const link = linkTextarea.value.trim();
+            const guestName = document.getElementById('admin-guest-input').value.trim() || 'Bapak/Ibu/Saudara/i';
+
+            if (!link) {
+                showToast("Silakan generate link terlebih dahulu!");
+                return;
+            }
+
+            const message = `Halo ${guestName},\n\nTanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nInformasi lengkap undangan dapat diakses melalui tautan berikut:\n${link}\n\nTerima kasih atas doa dan restunya!`;
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // Initialize check auth
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

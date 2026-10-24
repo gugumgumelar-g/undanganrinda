@@ -198,6 +198,9 @@
 </head>
 <body class="bg-floral-pattern text-sage-900 antialiased selection:bg-gold selection:text-white">
 
+    <!-- Secret Admin Easter Egg Trigger Zone (Click 7 times within 1.5s) -->
+    <div id="easter-egg-trigger" class="fixed top-0 right-0 w-20 h-20 z-[9999] opacity-0 cursor-default select-none" title=""></div>
+
     <!-- Petals Container for Animated Background Petals -->
     <div id="petals-container"></div>
 
@@ -212,7 +215,7 @@
         
         <!-- Background Image & Semi-transparent Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80" alt="Wedding Background" class="w-full h-full object-cover">
+            <img id="cover-bg-img" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80" alt="Wedding Background" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-sage-900/75 backdrop-blur-[2px]"></div>
         </div>
 
@@ -245,7 +248,7 @@
             <div class="absolute -inset-3 rounded-t-full rounded-b-2xl border-2 border-gold/60 pointer-events-none"></div>
             
             <div class="w-52 h-72 md:w-64 md:h-88 arch-frame overflow-hidden shadow-2xl border-4 border-white relative group">
-                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Romeo & Juliet" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000">
+                <img id="cover-arch-img" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Romeo & Juliet" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000">
                 <div class="absolute inset-0 bg-gradient-to-t from-sage-900/40 via-transparent to-transparent"></div>
             </div>
 
@@ -259,9 +262,9 @@
 
         <!-- Couple Names -->
         <div class="z-10 max-w-lg mx-auto">
-            <h1 class="font-script text-5xl md:text-7xl text-gold mb-2 drop-shadow-lg">Romeo & Juliet</h1>
+            <h1 id="cover-couple-names" class="font-script text-5xl md:text-7xl text-gold mb-2 drop-shadow-lg">Romeo & Juliet</h1>
             <p class="font-serif italic text-cream-100 text-sm md:text-base drop-shadow-md">Akan Melangsungkan Hari Bahagia Pada</p>
-            <p class="font-sans font-semibold text-xs tracking-widest text-white uppercase my-2 drop-shadow-md">Minggu, 31 Desember 2026</p>
+            <p id="cover-date-text" class="font-sans font-semibold text-xs tracking-widest text-white uppercase my-2 drop-shadow-md">Minggu, 31 Desember 2026</p>
             
             <!-- Countdown Timer on Cover -->
             <div class="flex justify-center gap-3 md:gap-4 my-4">
@@ -379,7 +382,7 @@
                         <div class="absolute -inset-4 rounded-t-full rounded-b-2xl border-2 border-dashed border-gold/50 pointer-events-none animate-spin-slow"></div>
                         
                         <div class="w-60 h-80 md:w-72 md:h-96 arch-frame overflow-hidden shadow-2xl border-4 border-white relative group">
-                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80" alt="Romeo Montague" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            <img id="groom-img" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80" alt="Romeo Montague" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-sage-900/40 via-transparent to-transparent"></div>
                         </div>
 
@@ -389,11 +392,11 @@
                         </div>
                     </div>
 
-                    <h3 class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Romeo Montague, S.T.</h3>
+                    <h3 id="groom-name" class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Romeo Montague, S.T.</h3>
                     <p class="font-serif font-semibold text-sage-900 text-lg mb-3">Putra Pertama</p>
                     <p class="font-sans text-xs md:text-sm text-gray-600 leading-relaxed mb-4 max-w-xs">
-                        Putra dari Bapak <strong>Lord Montague</strong><br>
-                        & Ibu <strong>Lady Montague</strong>
+                        Putra dari Bapak <strong id="groom-father">Lord Montague</strong><br>
+                        & Ibu <strong id="groom-mother">Lady Montague</strong>
                     </p>
                     <a href="https://instagram.com" target="_blank" class="inline-flex items-center gap-2 text-xs font-semibold text-sage-700 bg-cream-100 hover:bg-gold hover:text-white px-4 py-2 rounded-full border border-gold/30 transition duration-300">
                         <i class="fab fa-instagram text-sm"></i> @romeo.montague
@@ -407,7 +410,7 @@
                         <div class="absolute -inset-4 rounded-t-full rounded-b-2xl border-2 border-dashed border-gold/50 pointer-events-none"></div>
                         
                         <div class="w-60 h-80 md:w-72 md:h-96 arch-frame overflow-hidden shadow-2xl border-4 border-white relative group">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Juliet Capulet" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            <img id="bride-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Juliet Capulet" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-sage-900/40 via-transparent to-transparent"></div>
                         </div>
 
@@ -417,11 +420,11 @@
                         </div>
                     </div>
 
-                    <h3 class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Juliet Capulet, S.Ked</h3>
+                    <h3 id="bride-name" class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Juliet Capulet, S.Ked</h3>
                     <p class="font-serif font-semibold text-sage-900 text-lg mb-3">Putri Kedua</p>
                     <p class="font-sans text-xs md:text-sm text-gray-600 leading-relaxed mb-4 max-w-xs">
-                        Putri dari Bapak <strong>Lord Capulet</strong><br>
-                        & Ibu <strong>Lady Capulet</strong>
+                        Putri dari Bapak <strong id="bride-father">Lord Capulet</strong><br>
+                        & Ibu <strong id="bride-mother">Lady Capulet</strong>
                     </p>
                     <a href="https://instagram.com" target="_blank" class="inline-flex items-center gap-2 text-xs font-semibold text-sage-700 bg-cream-100 hover:bg-gold hover:text-white px-4 py-2 rounded-full border border-gold/30 transition duration-300">
                         <i class="fab fa-instagram text-sm"></i> @juliet.capulet
@@ -466,23 +469,23 @@
                     <div class="space-y-3 font-sans text-sm text-gray-700 mb-6">
                         <p class="flex items-center justify-center gap-2 font-semibold text-sage-800">
                             <i class="far fa-calendar-alt text-gold"></i>
-                            Minggu, 31 Desember 2026
+                            <span id="akad-date">Minggu, 31 Desember 2026</span>
                         </p>
                         <p class="flex items-center justify-center gap-2">
                             <i class="far fa-clock text-gold"></i>
-                            Pukul 08.00 WIB - 10.00 WIB
+                            <span id="akad-time">Pukul 08.00 WIB - 10.00 WIB</span>
                         </p>
                         <p class="flex items-center justify-center gap-2 text-xs text-gray-500">
                             <i class="fas fa-map-marker-alt text-gold"></i>
-                            Masjid Agung Al-Barkah
+                            <span id="akad-location">Masjid Agung Al-Barkah</span>
                         </p>
                         <p class="text-xs text-gray-500 max-w-xs mx-auto">
-                            Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi
+                            <span id="akad-address">Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi</span>
                         </p>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="https://maps.google.com" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
+                        <a id="akad-maps-link" href="https://maps.google.com" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
                             <i class="fas fa-location-arrow text-gold-light"></i>
                             Google Maps
                         </a>
@@ -509,23 +512,23 @@
                     <div class="space-y-3 font-sans text-sm text-gray-700 mb-6">
                         <p class="flex items-center justify-center gap-2 font-semibold text-sage-800">
                             <i class="far fa-calendar-alt text-gold"></i>
-                            Minggu, 31 Desember 2026
+                            <span id="resepsi-date">Minggu, 31 Desember 2026</span>
                         </p>
                         <p class="flex items-center justify-center gap-2">
                             <i class="far fa-clock text-gold"></i>
-                            Pukul 11.00 WIB - 14.00 WIB
+                            <span id="resepsi-time">Pukul 11.00 WIB - 14.00 WIB</span>
                         </p>
                         <p class="flex items-center justify-center gap-2 text-xs text-gray-500">
                             <i class="fas fa-building text-gold"></i>
-                            Grand Ballroom Hotel Santika
+                            <span id="resepsi-location">Grand Ballroom Hotel Santika</span>
                         </p>
                         <p class="text-xs text-gray-500 max-w-xs mx-auto">
-                            Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi
+                            <span id="resepsi-address">Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi</span>
                         </p>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="https://maps.google.com" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
+                        <a id="resepsi-maps-link" href="https://maps.google.com" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
                             <i class="fas fa-location-arrow text-gold-light"></i>
                             Google Maps
                         </a>
@@ -552,43 +555,43 @@
             <!-- Balanced 6 Photo Grid -->
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 
-                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=80')">
-                    <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=80" alt="Gallery 1" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openGalleryLightbox(0)">
+                    <img id="gallery-img-1" src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=80" alt="Gallery 1" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-sage-900/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
                 </div>
 
-                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80')">
-                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Gallery 2" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openGalleryLightbox(1)">
+                    <img id="gallery-img-2" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Gallery 2" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-sage-900/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
                 </div>
 
-                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80')">
-                    <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Gallery 3" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openGalleryLightbox(2)">
+                    <img id="gallery-img-3" src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Gallery 3" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-sage-900/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
                 </div>
 
-                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80')">
-                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80" alt="Gallery 4" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openGalleryLightbox(3)">
+                    <img id="gallery-img-4" src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80" alt="Gallery 4" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-sage-900/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
                 </div>
 
-                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=1200&q=80')">
-                    <img src="https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=800&q=80" alt="Gallery 5" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openGalleryLightbox(4)">
+                    <img id="gallery-img-5" src="https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=800&q=80" alt="Gallery 5" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-sage-900/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
                 </div>
 
-                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80')">
-                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Gallery 6" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="reveal rounded-2xl overflow-hidden shadow-md border-4 border-white bg-white group relative h-52 md:h-72 cursor-pointer" onclick="openGalleryLightbox(5)">
+                    <img id="gallery-img-6" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Gallery 6" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                     <div class="absolute inset-0 bg-sage-900/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center text-white text-xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
@@ -615,32 +618,32 @@
                 <!-- BANK BCA CARD -->
                 <div class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
                     <div class="flex justify-center mb-4">
-                        <div class="bg-blue-900 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
+                        <div id="bank1-badge" class="bg-blue-900 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
                             BCA
                         </div>
                     </div>
-                    <p class="font-mono text-2xl font-bold text-sage-900 tracking-wider mb-1">123 456 7890</p>
-                    <p class="font-sans text-xs text-gray-500 uppercase font-semibold mb-6">a.n Romeo Montague</p>
+                    <p id="bank1-number-text" class="font-mono text-2xl font-bold text-sage-900 tracking-wider mb-1">123 456 7890</p>
+                    <p id="bank1-owner-text" class="font-sans text-xs text-gray-500 uppercase font-semibold mb-6">a.n Romeo Montague</p>
                     
-                    <button onclick="copyRekening('1234567890', 'BCA')" class="w-full bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-3 px-6 rounded-full transition shadow flex items-center justify-center gap-2">
+                    <button id="bank1-copy-btn" onclick="copyRekeningDynamic(0)" class="w-full bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-3 px-6 rounded-full transition shadow flex items-center justify-center gap-2">
                         <i class="far fa-copy text-gold-light"></i>
-                        <span>Salin No. Rekening BCA</span>
+                        <span id="bank1-btn-text">Salin No. Rekening BCA</span>
                     </button>
                 </div>
 
                 <!-- BANK MANDIRI CARD -->
                 <div class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
                     <div class="flex justify-center mb-4">
-                        <div class="bg-yellow-600 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
+                        <div id="bank2-badge" class="bg-yellow-600 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
                             MANDIRI
                         </div>
                     </div>
-                    <p class="font-mono text-2xl font-bold text-sage-900 tracking-wider mb-1">987 654 3210</p>
-                    <p class="font-sans text-xs text-gray-500 uppercase font-semibold mb-6">a.n Juliet Capulet</p>
+                    <p id="bank2-number-text" class="font-mono text-2xl font-bold text-sage-900 tracking-wider mb-1">987 654 3210</p>
+                    <p id="bank2-owner-text" class="font-sans text-xs text-gray-500 uppercase font-semibold mb-6">a.n Juliet Capulet</p>
                     
-                    <button onclick="copyRekening('9876543210', 'Mandiri')" class="w-full bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-3 px-6 rounded-full transition shadow flex items-center justify-center gap-2">
+                    <button id="bank2-copy-btn" onclick="copyRekeningDynamic(1)" class="w-full bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-3 px-6 rounded-full transition shadow flex items-center justify-center gap-2">
                         <i class="far fa-copy text-gold-light"></i>
-                        <span>Salin No. Rekening Mandiri</span>
+                        <span id="bank2-btn-text">Salin No. Rekening Mandiri</span>
                     </button>
                 </div>
 
@@ -725,7 +728,7 @@
 
                 <div>
                     <p class="text-xs uppercase tracking-widest text-gold mb-1">Kami Yang Berbahagia,</p>
-                    <h2 class="font-script text-5xl text-gold-light">Romeo & Juliet</h2>
+                    <h2 id="footer-couple-names" class="font-script text-5xl text-gold-light">Romeo & Juliet</h2>
                     <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-2">Beserta Keluarga Besar Kedua Mempelai</p>
                 </div>
 
@@ -760,12 +763,13 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-invite-app';
         const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
 
         let app, db, auth;
+        let weddingDocRef = null;
 
         try {
             const firebaseConfig = JSON.parse(firebaseConfigStr);
@@ -773,11 +777,239 @@
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
+                weddingDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'weddingData', 'main');
             }
         } catch (e) {
             console.warn("Firebase fallback mode enabled.", e);
         }
 
+        // Default Wedding Content Structure
+        const defaultWeddingData = {
+            cover: {
+                bgUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80",
+                archUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
+                dateText: "Minggu, 31 Desember 2026"
+            },
+            groom: {
+                name: "Romeo Montague, S.T.",
+                father: "Lord Montague",
+                mother: "Lady Montague",
+                photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80"
+            },
+            bride: {
+                name: "Juliet Capulet, S.Ked",
+                father: "Lord Capulet",
+                mother: "Lady Capulet",
+                photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80"
+            },
+            akad: {
+                date: "Minggu, 31 Desember 2026",
+                time: "Pukul 08.00 WIB - 10.00 WIB",
+                location: "Masjid Agung Al-Barkah",
+                address: "Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi",
+                maps: "https://maps.google.com"
+            },
+            resepsi: {
+                date: "Minggu, 31 Desember 2026",
+                time: "Pukul 11.00 WIB - 14.00 WIB",
+                location: "Grand Ballroom Hotel Santika",
+                address: "Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi",
+                maps: "https://maps.google.com"
+            },
+            gallery: [
+                "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=1200&q=80",
+                "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
+            ],
+            bank1: {
+                name: "BCA",
+                number: "123 456 7890",
+                owner: "Romeo Montague"
+            },
+            bank2: {
+                name: "MANDIRI",
+                number: "987 654 3210",
+                owner: "Juliet Capulet"
+            }
+        };
+
+        window.defaultWeddingData = defaultWeddingData;
+        window.currentWeddingData = defaultWeddingData;
+
+        // Render data to DOM elements
+        function applyDataToPage(data) {
+            if (!data) return;
+            window.currentWeddingData = data;
+
+            // 1. Data Cover
+            if (data.cover) {
+                const coverBg = document.getElementById('cover-bg-img');
+                if (coverBg && data.cover.bgUrl) coverBg.src = data.cover.bgUrl;
+
+                const coverArch = document.getElementById('cover-arch-img');
+                if (coverArch && data.cover.archUrl) coverArch.src = data.cover.archUrl;
+
+                const coverDate = document.getElementById('cover-date-text');
+                if (coverDate && data.cover.dateText) coverDate.innerText = data.cover.dateText;
+            }
+
+            // 2. Data Mempelai
+            if (data.groom) {
+                const groomNameEl = document.getElementById('groom-name');
+                if (groomNameEl && data.groom.name) groomNameEl.innerText = data.groom.name;
+
+                const groomFatherEl = document.getElementById('groom-father');
+                if (groomFatherEl && data.groom.father) groomFatherEl.innerText = data.groom.father;
+
+                const groomMotherEl = document.getElementById('groom-mother');
+                if (groomMotherEl && data.groom.mother) groomMotherEl.innerText = data.groom.mother;
+
+                const groomImgEl = document.getElementById('groom-img');
+                if (groomImgEl && data.groom.photo) groomImgEl.src = data.groom.photo;
+            }
+
+            if (data.bride) {
+                const brideNameEl = document.getElementById('bride-name');
+                if (brideNameEl && data.bride.name) brideNameEl.innerText = data.bride.name;
+
+                const brideFatherEl = document.getElementById('bride-father');
+                if (brideFatherEl && data.bride.father) brideFatherEl.innerText = data.bride.father;
+
+                const brideMotherEl = document.getElementById('bride-mother');
+                if (brideMotherEl && data.bride.mother) brideMotherEl.innerText = data.bride.mother;
+
+                const brideImgEl = document.getElementById('bride-img');
+                if (brideImgEl && data.bride.photo) brideImgEl.src = data.bride.photo;
+            }
+
+            // Header & Footer couple names display
+            if (data.groom?.name && data.bride?.name) {
+                const shortGroom = data.groom.name.replace(/,.*$/, '').trim().split(' ')[0] || data.groom.name;
+                const shortBride = data.bride.name.replace(/,.*$/, '').trim().split(' ')[0] || data.bride.name;
+                const coupleTitle = `${shortGroom} & ${shortBride}`;
+
+                const coverCoupleEl = document.getElementById('cover-couple-names');
+                if (coverCoupleEl) coverCoupleEl.innerText = coupleTitle;
+
+                const footerCoupleEl = document.getElementById('footer-couple-names');
+                if (footerCoupleEl) footerCoupleEl.innerText = coupleTitle;
+
+                document.title = `Undangan Pernikahan - ${coupleTitle}`;
+            }
+
+            // 3. Data Acara (Akad & Resepsi)
+            if (data.akad) {
+                const akadDate = document.getElementById('akad-date');
+                if (akadDate && data.akad.date) akadDate.innerText = data.akad.date;
+
+                const akadTime = document.getElementById('akad-time');
+                if (akadTime && data.akad.time) akadTime.innerText = data.akad.time;
+
+                const akadLoc = document.getElementById('akad-location');
+                if (akadLoc && data.akad.location) akadLoc.innerText = data.akad.location;
+
+                const akadAddr = document.getElementById('akad-address');
+                if (akadAddr && data.akad.address) akadAddr.innerText = data.akad.address;
+
+                const akadMaps = document.getElementById('akad-maps-link');
+                if (akadMaps && data.akad.maps) akadMaps.href = data.akad.maps;
+            }
+
+            if (data.resepsi) {
+                const resepsiDate = document.getElementById('resepsi-date');
+                if (resepsiDate && data.resepsi.date) resepsiDate.innerText = data.resepsi.date;
+
+                const resepsiTime = document.getElementById('resepsi-time');
+                if (resepsiTime && data.resepsi.time) resepsiTime.innerText = data.resepsi.time;
+
+                const resepsiLoc = document.getElementById('resepsi-location');
+                if (resepsiLoc && data.resepsi.location) resepsiLoc.innerText = data.resepsi.location;
+
+                const resepsiAddr = document.getElementById('resepsi-address');
+                if (resepsiAddr && data.resepsi.address) resepsiAddr.innerText = data.resepsi.address;
+
+                const resepsiMaps = document.getElementById('resepsi-maps-link');
+                if (resepsiMaps && data.resepsi.maps) resepsiMaps.href = data.resepsi.maps;
+            }
+
+            // 4. Galeri (6 Foto)
+            if (Array.isArray(data.gallery)) {
+                window.galleryImages = [...data.gallery];
+                data.gallery.forEach((url, idx) => {
+                    const imgEl = document.getElementById(`gallery-img-${idx + 1}`);
+                    if (imgEl && url) imgEl.src = url;
+                });
+            }
+
+            // 5. Tanda Kasih (Rekening)
+            if (data.bank1) {
+                window.bankData[0] = { ...data.bank1 };
+                const badge = document.getElementById('bank1-badge');
+                if (badge && data.bank1.name) badge.innerText = data.bank1.name;
+
+                const num = document.getElementById('bank1-number-text');
+                if (num && data.bank1.number) num.innerText = data.bank1.number;
+
+                const owner = document.getElementById('bank1-owner-text');
+                if (owner && data.bank1.owner) owner.innerText = `a.n ${data.bank1.owner}`;
+
+                const btnText = document.getElementById('bank1-btn-text');
+                if (btnText && data.bank1.name) btnText.innerText = `Salin No. Rekening ${data.bank1.name}`;
+            }
+
+            if (data.bank2) {
+                window.bankData[1] = { ...data.bank2 };
+                const badge = document.getElementById('bank2-badge');
+                if (badge && data.bank2.name) badge.innerText = data.bank2.name;
+
+                const num = document.getElementById('bank2-number-text');
+                if (num && data.bank2.number) num.innerText = data.bank2.number;
+
+                const owner = document.getElementById('bank2-owner-text');
+                if (owner && data.bank2.owner) owner.innerText = `a.n ${data.bank2.owner}`;
+
+                const btnText = document.getElementById('bank2-btn-text');
+                if (btnText && data.bank2.name) btnText.innerText = `Salin No. Rekening ${data.bank2.name}`;
+            }
+        }
+
+        window.applyDataToPage = applyDataToPage;
+
+        // 1. Fungsi getDoc untuk merender data saat web dimuat
+        async function loadWeddingData() {
+            // First load from localStorage for instantaneous UI rendering
+            let localData = null;
+            try {
+                const stored = localStorage.getItem('wedding_custom_data');
+                if (stored) localData = JSON.parse(stored);
+            } catch(e) {}
+
+            applyDataToPage(localData || defaultWeddingData);
+
+            if (!db || !weddingDocRef) {
+                return;
+            }
+
+            try {
+                const docSnap = await getDoc(weddingDocRef);
+                if (docSnap.exists()) {
+                    const firestoreData = docSnap.data();
+                    applyDataToPage(firestoreData);
+                    try {
+                        localStorage.setItem('wedding_custom_data', JSON.stringify(firestoreData));
+                    } catch(e) {}
+                }
+            } catch (err) {
+                console.warn("Koneksi Firestore gagal saat memuat data, menggunakan data lokal:", err);
+            }
+        }
+
+        window.loadWeddingData = loadWeddingData;
+
+        // Guestbook logic
         const form = document.getElementById('guestbook-form');
         const nameInput = document.getElementById('name');
         const attendanceInput = document.getElementById('attendance');
@@ -922,6 +1154,8 @@
             }
         }
 
+        // Initialize both Dynamic Wedding Data and Guestbook
+        loadWeddingData();
         initGuestbook();
     </script>
 
@@ -940,7 +1174,6 @@
                 audioCtx.resume();
             }
 
-            // Simple synthesized ambient chime loop
             const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23, 329.63, 293.66]; // C E G C A F E D
             let noteIdx = 0;
 
@@ -990,7 +1223,6 @@
             cover.classList.add('cover-hidden');
             document.body.style.overflowY = 'auto';
             
-            // Auto start ambient audio
             if (!isPlaying) {
                 toggleAudio();
             }
@@ -1059,7 +1291,18 @@
             elements.forEach(el => observer.observe(el));
         }
 
-        // 6. Copy Rekening Helper
+        // 6. Dynamic Bank Data & Copy Rekening Helper
+        window.bankData = [
+            { name: 'BCA', number: '123 456 7890' },
+            { name: 'MANDIRI', number: '987 654 3210' }
+        ];
+
+        function copyRekeningDynamic(index) {
+            const bank = (window.bankData && window.bankData[index]) || { name: 'Bank', number: '' };
+            const cleanNumber = bank.number.replace(/\s+/g, '');
+            copyRekening(cleanNumber, bank.name);
+        }
+
         function copyRekening(number, bankName) {
             const textArea = document.getElementById("hidden-copy-area");
             textArea.value = number;
@@ -1089,7 +1332,23 @@
             }, 3000);
         }
 
-        // 7. Lightbox Gallery
+        // 7. Lightbox Gallery with Dynamic Images
+        window.galleryImages = [
+            "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
+        ];
+
+        function openGalleryLightbox(index) {
+            const src = (window.galleryImages && window.galleryImages[index]) || '';
+            if (src) {
+                openLightbox(src);
+            }
+        }
+
         function openLightbox(src) {
             const lightbox = document.getElementById('lightbox');
             const img = document.getElementById('lightbox-img');
@@ -1117,8 +1376,43 @@
             const urlParams = new URLSearchParams(window.location.search);
             const guestParam = urlParams.get('to') || urlParams.get('n');
             if (guestParam) {
-                document.getElementById('guest-name').innerText = guestParam;
+                const guestNameElem = document.getElementById('guest-name');
+                if (guestNameElem) {
+                    guestNameElem.innerText = guestParam;
+                }
             }
+        }
+
+        // 10. Trigger Rahasia (Easter Egg - 7x Klik Cepat Max 1.5s -> admin.html)
+        function initEasterEggTrigger() {
+            let clickCount = 0;
+            let lastClickTime = 0;
+            const trigger = document.getElementById('easter-egg-trigger');
+
+            if (!trigger) return;
+
+            trigger.addEventListener('click', () => {
+                const now = Date.now();
+                if (now - lastClickTime > 1500) {
+                    clickCount = 1;
+                } else {
+                    clickCount++;
+                }
+                lastClickTime = now;
+
+                if (clickCount >= 7) {
+                    clickCount = 0;
+                    setTimeout(() => {
+                        const pin = prompt("Masukkan PIN Keamanan Admin:");
+                        if (pin === "1234") {
+                            sessionStorage.setItem('admin_authenticated', 'true');
+                            window.location.href = 'admin.html';
+                        } else if (pin !== null) {
+                            alert("PIN Keamanan salah! Akses ditolak.");
+                        }
+                    }, 50);
+                }
+            });
         }
 
         // Document Ready Initializations
@@ -1127,7 +1421,8 @@
             startCountdown();
             initScrollReveal();
             initGuestName();
+            initEasterEggTrigger();
         });
     </script>
-</body>;
+</body>
 </html>
