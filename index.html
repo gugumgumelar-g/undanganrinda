@@ -730,7 +730,7 @@
                     <!-- Form RSVP -->
                     <div class="md:col-span-5 reveal glass-card p-6 rounded-3xl shadow-lg h-fit border border-gold/30">
                         <h3 class="font-serif font-bold text-lg text-sage-900 mb-4 border-b border-gold/20 pb-2">Kirim Ucapan & Konfirmasi</h3>
-                        <form id="guestbook-form" class="space-y-4">
+                        <form id="guestbook-form" onsubmit="return false;" class="space-y-4">
                             <div>
                                 <label for="name" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Nama Anda</label>
                                 <input type="text" id="name" required class="w-full px-4 py-2.5 text-sm bg-white/80 border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="Masukkan nama...">
@@ -901,7 +901,6 @@
                 name: "musik.mp3",
                 autoplay: true
             }
-        };
         };
 
         const defaultWeddingData = (typeof window !== 'undefined' && window.weddingData) ? window.weddingData : fallbackWeddingData;
@@ -1293,8 +1292,6 @@
 
             } catch (err) {
                 console.error("Auth initialization error:", err);
-                renderMessages(localMessages);
-            }
                 renderMessages(localMessages);
             }
         }
