@@ -16,7 +16,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Master Wedding Data (Data Pelanggan Permanen) -->
-    <script src="wedding-data.js?v=2"></script>
+    <script src="wedding-data.js?v=3"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -1227,6 +1227,31 @@
         let audioCtx = null;
         let timerId = null;
         let customAudio = null;
+        let audioSourceConnected = false;
+        let audioGainNode = null;
+
+        function boostAudioVolume(player) {
+            if (!player || audioSourceConnected) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const isLocalOrBlob = !player.src || !player.src.startsWith('http') || player.src.startsWith(window.location.origin) || player.src.startsWith('blob:');
+                if (isLocalOrBlob) {
+                    const source = audioCtx.createMediaElementSource(player);
+                    audioGainNode = audioCtx.createGain();
+                    audioGainNode.gain.value = 1.6; // Penguat audio ~60% lebih kencang di speaker HP
+                    source.connect(audioGainNode);
+                    audioGainNode.connect(audioCtx.destination);
+                    audioSourceConnected = true;
+                }
+            } catch(e) {
+                console.warn("Audio booster notice:", e);
+            }
+        }
 
         function getAudioElement() {
             if (!customAudio) customAudio = document.getElementById('wedding-audio-player');
@@ -1319,6 +1344,11 @@
                     if (!player.src || player.src === window.location.href) {
                         player.src = 'musik.mp3';
                         player.load();
+                    }
+                    player.volume = 1.0;
+                    boostAudioVolume(player);
+                    if (audioCtx && audioCtx.state === 'suspended') {
+                        audioCtx.resume();
                     }
                     player.play().then(() => {
                         icon.className = 'fas fa-music text-lg';
