@@ -654,6 +654,14 @@
                 </div>
 
             </div>
+            <script>
+                if (window.weddingData && Array.isArray(window.weddingData.gallery)) {
+                    window.weddingData.gallery.forEach(function(url, idx) {
+                        var el = document.getElementById('gallery-img-' + (idx + 1));
+                        if (el && url) el.src = url;
+                    });
+                }
+            </script>
         </section>
 
 
@@ -822,19 +830,24 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-invite-app';
-        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMElwHD3uCf9FgBRhT8dGWJnpgpPoYIxw",
+            authDomain: "undangan-digital-1b15a.firebaseapp.com",
+            projectId: "undangan-digital-1b15a",
+            storageBucket: "undangan-digital-1b15a.firebasestorage.app",
+            messagingSenderId: "271106208655",
+            appId: "1:271106208655:web:dde41ffd11410b9485d1fa",
+            measurementId: "G-SPQBPF6SX4"
+        };
 
         let app, db, auth;
         let weddingDocRef = null;
 
         try {
-            const firebaseConfig = JSON.parse(firebaseConfigStr);
-            if(Object.keys(firebaseConfig).length > 0) {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                weddingDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'weddingData', 'main');
-            }
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            weddingDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'weddingData', 'main');
         } catch (e) {
             console.warn("Firebase fallback mode enabled.", e);
         }
@@ -842,59 +855,53 @@
         // Default Wedding Content Structure (Prioritas dari wedding-data.js)
         const fallbackWeddingData = {
             cover: {
-                bgUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80",
-                archUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
-                dateText: "Minggu, 31 Desember 2026"
+                bgUrl: "",
+                archUrl: "",
+                dateText: "Minggu, 29 November 2026"
             },
             groom: {
-                name: "Romeo Montague, S.T.",
-                father: "Lord Montague",
-                mother: "Lady Montague",
-                photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80"
+                name: "Fajar Taufik Hidayat",
+                father: "Didi Soetardi",
+                mother: "cucu Nurmala",
+                photo: ""
             },
             bride: {
-                name: "Juliet Capulet, S.Ked",
-                father: "Lord Capulet",
-                mother: "Lady Capulet",
-                photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80"
+                name: "Rinda Nursila",
+                father: "Didi Soetardi",
+                mother: "cucu Nurmala",
+                photo: ""
             },
             akad: {
-                date: "Minggu, 31 Desember 2026",
-                time: "Pukul 08.00 WIB - 10.00 WIB",
-                location: "Masjid Agung Al-Barkah",
-                address: "Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi",
-                maps: "https://maps.google.com"
+                date: "Minggu, 29 November 2026",
+                time: "Pukul 09.00 WIB - 10.00 WIB",
+                location: "Kp. Walahir",
+                address: "kp. Walahir RT 01 RW 13 kec Paseh",
+                maps: "https://maps.app.goo.gl/NoiukVo2AKbBWwXU9?g_st=ac"
             },
             resepsi: {
-                date: "Minggu, 31 Desember 2026",
-                time: "Pukul 11.00 WIB - 14.00 WIB",
-                location: "Grand Ballroom Hotel Santika",
-                address: "Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi",
-                maps: "https://maps.google.com"
+                date: "Minggu, 29 November 2026",
+                time: "Pukul 11.00 WIB - 16.00 WIB",
+                location: "Kp. Walahir",
+                address: "kp. Walahir RT 01 RW 13 kec Paseh",
+                maps: "https://maps.app.goo.gl/NoiukVo2AKbBWwXU9?g_st=ac"
             },
-            gallery: [
-                "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=80",
-                "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80",
-                "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80",
-                "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
-                "https://images.unsplash.com/photo-1621245643446-59b362086c2e?auto=format&fit=crop&w=1200&q=80",
-                "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
-            ],
+            gallery: [],
             bank1: {
-                name: "BCA",
-                number: "123 456 7890",
-                owner: "Romeo Montague"
+                name: "Gopay",
+                number: "085788826551",
+                owner: "Fajar Taufik Hidayat"
             },
             bank2: {
-                name: "MANDIRI",
-                number: "987 654 3210",
-                owner: "Juliet Capulet"
+                name: "",
+                number: "",
+                owner: ""
             },
             music: {
-                url: "",
-                name: "Instrumen Default",
+                url: "musik.mp3",
+                name: "musik.mp3",
                 autoplay: true
             }
+        };
         };
 
         const defaultWeddingData = (typeof window !== 'undefined' && window.weddingData) ? window.weddingData : fallbackWeddingData;
@@ -1213,11 +1220,15 @@
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    await signInAnonymously(auth);
+                    try {
+                        await signInAnonymously(auth);
+                    } catch(authErr) {
+                        console.warn("Anonymous auth info:", authErr);
+                    }
                 }
 
-                const user = auth.currentUser;
-                if (!user) return;
+                const currentUser = auth.currentUser;
+                const uid = currentUser ? currentUser.uid : ('guest_' + Math.random().toString(36).substring(2, 9));
 
                 const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'guestmessages');
 
@@ -1255,13 +1266,25 @@
                             attendance,
                             message,
                             timestamp: Date.now(),
-                            userId: user.uid
+                            userId: uid
                         });
                         form.reset();
                         showToast("Terima kasih, ucapan Anda terkirim!");
                     } catch (err) {
                         console.error("Error sending wish:", err);
-                        showToast("Gagal mengirim ucapan.");
+                        // Fallback ke penyimpanan lokal jika koneksi bermasalah
+                        localMessages.push({
+                            name,
+                            attendance,
+                            message,
+                            timestamp: Date.now()
+                        });
+                        try {
+                            localStorage.setItem('wedding_guest_messages', JSON.stringify(localMessages));
+                        } catch(e) {}
+                        renderMessages(localMessages);
+                        form.reset();
+                        showToast("Ucapan tersimpan!");
                     } finally {
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = '<i class="far fa-paper-plane text-gold-light"></i> <span>Kirim Ucapan</span>';
@@ -1270,6 +1293,8 @@
 
             } catch (err) {
                 console.error("Auth initialization error:", err);
+                renderMessages(localMessages);
+            }
                 renderMessages(localMessages);
             }
         }
@@ -1606,7 +1631,7 @@
         }
 
         // 7. Lightbox Gallery with Dynamic Images
-        window.galleryImages = [
+        window.galleryImages = (window.weddingData && window.weddingData.gallery) || [
             "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1200&q=80",
             "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80",
             "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80",
@@ -1640,7 +1665,7 @@
         function addToCalendar(title, location, startDateISO, endDateISO) {
             const start = startDateISO.replace(/-|:|\.\d\d\d/g, '');
             const end = endDateISO.replace(/-|:|\.\d\d\d/g, '');
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&location=${encodeURIComponent(location)}&details=${encodeURIComponent('Pernikahan Romeo & Juliet')}`;
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&location=${encodeURIComponent(location)}&details=${encodeURIComponent('Pernikahan Fajar & Rinda')}`;
             window.open(url, '_blank');
         }
 
