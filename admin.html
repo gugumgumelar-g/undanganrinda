@@ -15,6 +15,8 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Master Wedding Data (Data Pelanggan Permanen) -->
+    <script src="wedding-data.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -163,49 +165,144 @@
         <!-- Main Content Area -->
         <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
             
-            <!-- SECTION 1: GENERATOR LINK UNDANGAN (SHARE LINK) -->
+            <!-- SECTION 1: GENERATOR LINK & PESAN UNDANGAN (SHARE LINK) -->
             <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
                 <div class="flex items-center gap-3 border-b border-gold/20 pb-4 mb-6">
                     <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
                         <i class="fas fa-share-alt"></i>
                     </div>
                     <div>
-                        <h2 class="font-serif font-bold text-xl text-sage-900">Generator Link Undangan (Share Link)</h2>
-                        <p class="text-xs text-gray-600">Buat tautan personalisasi dengan nama tamu untuk dibagikan via WhatsApp atau media sosial.</p>
+                        <h2 class="font-serif font-bold text-xl text-sage-900">Generator Link & Pesan Undangan (WhatsApp)</h2>
+                        <p class="text-xs text-gray-600">Buat teks undangan formal lengkap dengan nama tamu dan link personalisasi yang siap dikirim.</p>
                     </div>
                 </div>
 
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <div>
-                        <label for="admin-guest-input" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Nama Tamu</label>
+                        <label for="admin-guest-input" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Nama Tamu Undangan</label>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <input type="text" id="admin-guest-input" placeholder="Masukkan nama tamu, misal: Bapak Budi Santoso & Keluarga" class="flex-1 px-4 py-2.5 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition">
-                            <button type="button" onclick="generateGuestLink()" class="bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-xl shadow transition duration-200 flex items-center justify-center gap-2">
+                            <input type="text" id="admin-guest-input" placeholder="Masukkan nama tamu, misal: Bapak Budi Santoso & Keluarga" onkeydown="if(event.key==='Enter'){event.preventDefault();generateGuestLink();}" class="flex-1 px-4 py-3 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition shadow-inner">
+                            <button type="button" onclick="generateGuestLink()" class="bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-bold uppercase tracking-wider px-6 py-3.5 rounded-xl shadow transition duration-200 flex items-center justify-center gap-2">
                                 <i class="fas fa-magic text-gold-light"></i>
-                                <span>Generate Link</span>
+                                <span>Generate Pesan & Link</span>
                             </button>
                         </div>
                     </div>
 
+                    <!-- Detail Acara untuk Template Pesan -->
+                    <div class="bg-sage-50/60 p-4 rounded-2xl border border-gold/20 space-y-3">
+                        <div class="flex items-center justify-between text-xs font-bold text-sage-900">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fas fa-sliders-h text-gold"></i>
+                                <span>Detail Acara pada Teks Undangan</span>
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-normal italic">*Bisa disesuaikan atau gunakan default di bawah</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 mb-1">📅 Tanggal Acara</label>
+                                <input type="text" id="admin-msg-date" value="03 Oktober 2026" class="w-full px-3 py-1.5 bg-white border border-gold/30 rounded-lg text-xs focus:ring-1 focus:ring-gold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 mb-1">🕘 Pukul / Waktu</label>
+                                <input type="text" id="admin-msg-time" value="09.00 Wib s.d selesai" class="w-full px-3 py-1.5 bg-white border border-gold/30 rounded-lg text-xs focus:ring-1 focus:ring-gold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 mb-1">📍 Tempat Acara</label>
+                                <input type="text" id="admin-msg-location" value="Kp. Campaka" class="w-full px-3 py-1.5 bg-white border border-gold/30 rounded-lg text-xs focus:ring-1 focus:ring-gold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-sage-700 mb-1">💑 Nama Pengantin</label>
+                                <input type="text" id="admin-msg-couple" placeholder="Romeo & Juliet" class="w-full px-3 py-1.5 bg-white border border-gold/30 rounded-lg text-xs focus:ring-1 focus:ring-gold focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
-                        <label for="admin-generated-link" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Hasil Tautan Undangan</label>
-                        <textarea id="admin-generated-link" readonly rows="2" placeholder="Tautan undangan akan muncul di sini setelah Anda mengklik tombol 'Generate Link'..." class="w-full px-4 py-2.5 text-xs font-mono bg-cream-50/70 border border-gold/30 rounded-xl text-sage-900 resize-none focus:outline-none"></textarea>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="admin-generated-link" class="block text-xs font-semibold text-sage-800 uppercase tracking-wider">Hasil Teks & Tautan Undangan</label>
+                            <span class="text-[11px] text-gray-500 italic">Format WhatsApp resmi</span>
+                        </div>
+                        <textarea id="admin-generated-link" rows="13" placeholder="Pesan undangan lengkap akan muncul di sini setelah Anda memasukkan nama tamu dan mengklik 'Generate Pesan & Link'..." class="w-full p-4 text-xs font-mono bg-cream-50/70 border border-gold/30 rounded-2xl text-sage-900 leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-gold"></textarea>
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-                        <p class="text-[11px] text-gray-500 italic">
-                            *Tautan ini akan langsung mengisi teks salam "Kepada Yth." di halaman depan undangan.
-                        </p>
-                        <div class="flex gap-2">
-                            <button type="button" onclick="shareWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow transition flex items-center gap-2">
-                                <i class="fab fa-whatsapp text-sm"></i>
-                                <span>Kirim WA</span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="openGuestPreview()" class="bg-cream-100 hover:bg-cream-200 text-sage-800 text-xs font-semibold py-2.5 px-4 rounded-xl border border-gold/40 transition flex items-center gap-2">
+                                <i class="fas fa-external-link-alt text-gold"></i>
+                                <span>Buka Link Tamu</span>
                             </button>
-                            <button type="button" onclick="copyGuestLink()" class="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-white text-xs font-bold uppercase tracking-wider py-2.5 px-5 rounded-xl shadow transition flex items-center gap-2">
-                                <i class="far fa-copy text-sm"></i>
-                                <span>Salin Link</span>
+                            <button type="button" onclick="copyOnlyUrl()" class="bg-white hover:bg-cream-50 text-sage-700 text-xs font-semibold py-2.5 px-4 rounded-xl border border-gold/30 transition flex items-center gap-1.5">
+                                <i class="fas fa-link text-gold"></i>
+                                <span>Salin Link Saja</span>
                             </button>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="shareWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 px-5 rounded-xl shadow transition flex items-center gap-2">
+                                <i class="fab fa-whatsapp text-sm"></i>
+                                <span>Kirim via WA</span>
+                            </button>
+                            <button type="button" onclick="copyGuestLink()" class="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-white text-xs font-bold uppercase tracking-wider py-2.5 px-6 rounded-xl shadow-lg transition flex items-center gap-2">
+                                <i class="far fa-copy text-sm"></i>
+                                <span>Salin Semua Pesan</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION KHUSUS: SINKRONISASI DATA KE VS CODE & NETLIFY -->
+            <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-gold/40 relative overflow-hidden bg-gradient-to-br from-cream-50 via-white to-sage-50/60">
+                <div class="flex items-center gap-3 border-b border-gold/20 pb-4 mb-5">
+                    <div class="w-10 h-10 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-lg shadow-sm">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-serif font-bold text-xl text-sage-900">Simpan Data Pelanggan ke VS Code & Netlify</h2>
+                        <p class="text-xs text-gray-600">Jadikan data yang Anda isi di panel ini 100% permanen di kodingan VS Code agar langsung tampil di Netlify untuk semua tamu!</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <div class="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 flex items-start gap-3">
+                        <i class="fas fa-lightbulb text-amber-600 text-base mt-0.5 flex-shrink-0"></i>
+                        <div class="space-y-1 text-sage-900">
+                            <span class="font-bold">Kenapa harus disimpan ke VS Code sebelum ke Netlify?</span>
+                            <p class="text-[11px] text-gray-600 leading-relaxed">
+                                Tombol <b>"Simpan Semua Perubahan"</b> di bawah menyimpan data ke memori browser laptop Anda. Agar tamu yang membuka web di Netlify dari HP mereka melihat data pelanggan ini, Anda cukup klik <b>"Download wedding-data.js"</b> lalu timpa/ganti file <code>wedding-data.js</code> di folder VS Code Anda, lalu deploy ke Netlify!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                        <!-- Download wedding-data.js -->
+                        <button type="button" onclick="downloadWeddingDataFile()" class="p-3.5 bg-sage-700 hover:bg-sage-900 text-white rounded-xl shadow-md transition flex flex-col items-center text-center gap-1.5 group">
+                            <i class="fas fa-file-download text-gold-light text-lg group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-xs">Download wedding-data.js</span>
+                            <span class="text-[10px] text-cream-200">Timpa file di folder VS Code</span>
+                        </button>
+
+                        <!-- Salin Kode wedding-data.js -->
+                        <button type="button" onclick="exportWeddingDataCode()" class="p-3.5 bg-white hover:bg-cream-100 text-sage-900 border border-gold/40 rounded-xl shadow-sm transition flex flex-col items-center text-center gap-1.5 group">
+                            <i class="far fa-copy text-gold text-lg group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-xs">Salin Kode Data</span>
+                            <span class="text-[10px] text-gray-500">Paste langsung ke VS Code</span>
+                        </button>
+
+                        <!-- Simpan File Backup Klien (.json) -->
+                        <button type="button" onclick="downloadClientBackupJson()" class="p-3.5 bg-cream-100 hover:bg-cream-200 text-sage-900 border border-gold/30 rounded-xl shadow-sm transition flex flex-col items-center text-center gap-1.5 group">
+                            <i class="fas fa-archive text-sage-700 text-lg group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-xs">Simpan Backup Klien (.json)</span>
+                            <span class="text-[10px] text-gray-500">Simpan profil per pelanggan</span>
+                        </button>
+
+                        <!-- Buka Backup Klien (.json) -->
+                        <label class="cursor-pointer p-3.5 bg-white hover:bg-cream-100 text-sage-900 border border-gold/30 rounded-xl shadow-sm transition flex flex-col items-center text-center gap-1.5 group">
+                            <i class="fas fa-folder-open text-sage-700 text-lg group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-xs">Buka Backup Klien (.json)</span>
+                            <span class="text-[10px] text-gray-500">Buka data pelanggan lama</span>
+                            <input type="file" accept=".json" class="hidden" onchange="importClientBackupJson(event)">
+                        </label>
                     </div>
                 </div>
             </section>
@@ -221,19 +318,56 @@
                         </div>
                         <div>
                             <h2 class="font-serif font-bold text-xl text-sage-900">Data Cover Utama</h2>
-                            <p class="text-xs text-gray-600">Atur gambar latar belakang, foto pasangan cover, dan teks tanggal pembuka.</p>
+                            <p class="text-xs text-gray-600">Atur gambar latar belakang, foto pasangan bingkai arch, dan teks tanggal pembuka.</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Link Foto Cover Utama (Background)</label>
-                            <input type="url" id="admin-cover-bg-url" class="w-full px-4 py-2 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="https://...">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Cover Background -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider">Foto Background Cover Utama</label>
+                            <div class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-gold/30">
+                                <img id="admin-cover-bg-preview" src="" class="w-16 h-16 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Preview Background">
+                                <div class="flex-1 space-y-2">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[11px] font-semibold py-1.5 px-3 rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload dari Perangkat</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-cover-bg-url', 'admin-cover-bg-preview', 1200, 0.78)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-cover-bg-url', 'admin-cover-bg-preview')" class="text-gray-400 hover:text-red-500 text-[11px] py-1.5 px-2.5 rounded-lg border border-gray-200 transition" title="Hapus foto">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" id="admin-cover-bg-url" oninput="updateImagePreview('admin-cover-bg-url', 'admin-cover-bg-preview')" class="w-full px-3 py-1.5 text-xs bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Atau masukkan URL / link foto...">
+                                    <div id="admin-cover-bg-url-info" class="text-[10px] hidden"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Link Foto Bingkai Arch Cover</label>
-                            <input type="url" id="admin-cover-arch-url" class="w-full px-4 py-2 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="https://...">
+
+                        <!-- Cover Arch -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider">Foto Bingkai Arch Cover</label>
+                            <div class="flex items-start gap-3 bg-white/70 p-3 rounded-2xl border border-gold/30">
+                                <img id="admin-cover-arch-preview" src="" class="w-16 h-16 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Preview Arch">
+                                <div class="flex-1 space-y-2">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[11px] font-semibold py-1.5 px-3 rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload dari Perangkat</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-cover-arch-url', 'admin-cover-arch-preview', 800, 0.8)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-cover-arch-url', 'admin-cover-arch-preview')" class="text-gray-400 hover:text-red-500 text-[11px] py-1.5 px-2.5 rounded-lg border border-gray-200 transition" title="Hapus foto">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" id="admin-cover-arch-url" oninput="updateImagePreview('admin-cover-arch-url', 'admin-cover-arch-preview')" class="w-full px-3 py-1.5 text-xs bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Atau masukkan URL / link foto...">
+                                    <div id="admin-cover-arch-url-info" class="text-[10px] hidden"></div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Cover Date -->
                         <div class="md:col-span-2">
                             <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1">Teks Tanggal di Cover Utama</label>
                             <input type="text" id="admin-cover-date-text" class="w-full px-4 py-2 text-sm bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="Contoh: Minggu, 31 Desember 2026">
@@ -254,7 +388,7 @@
                     </div>
 
                     <!-- Mempelai Pria -->
-                    <div class="bg-sage-50/70 p-5 rounded-2xl border border-sage-200 space-y-3">
+                    <div class="bg-sage-50/70 p-5 rounded-2xl border border-sage-200 space-y-4">
                         <div class="flex items-center gap-2 text-sage-900 font-bold text-xs uppercase tracking-wider">
                             <i class="fas fa-mars text-gold"></i>
                             <span>Mempelai Pria</span>
@@ -264,9 +398,25 @@
                                 <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Lengkap Pria</label>
                                 <input type="text" id="admin-groom-name" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Romeo Montague, S.T.">
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Link Foto Profil Pria</label>
-                                <input type="url" id="admin-groom-photo" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                            <div class="space-y-1.5">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase">Foto Profil Pria</label>
+                                <div class="flex items-start gap-2.5 bg-white p-2 rounded-xl border border-gold/30">
+                                    <img id="admin-groom-photo-preview" src="" class="w-12 h-12 rounded-lg object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Foto Pria">
+                                    <div class="flex-1 space-y-1.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded shadow-sm transition inline-flex items-center gap-1">
+                                                <i class="fas fa-folder-open text-gold-light"></i>
+                                                <span>Pilih Foto</span>
+                                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-groom-photo', 'admin-groom-photo-preview', 600, 0.8)">
+                                            </label>
+                                            <button type="button" onclick="clearImage('admin-groom-photo', 'admin-groom-photo-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded border border-gray-200" title="Hapus foto">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" id="admin-groom-photo" oninput="updateImagePreview('admin-groom-photo', 'admin-groom-photo-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded focus:ring-1 focus:ring-gold focus:outline-none" placeholder="Atau tempel URL foto...">
+                                        <div id="admin-groom-photo-info" class="text-[10px] hidden"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Ayah Pria</label>
@@ -280,7 +430,7 @@
                     </div>
 
                     <!-- Mempelai Wanita -->
-                    <div class="bg-blush-100/40 p-5 rounded-2xl border border-blush-300/50 space-y-3">
+                    <div class="bg-blush-100/40 p-5 rounded-2xl border border-blush-300/50 space-y-4">
                         <div class="flex items-center gap-2 text-sage-900 font-bold text-xs uppercase tracking-wider">
                             <i class="fas fa-venus text-blush-500"></i>
                             <span>Mempelai Wanita</span>
@@ -290,9 +440,25 @@
                                 <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Lengkap Wanita</label>
                                 <input type="text" id="admin-bride-name" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Juliet Capulet, S.Ked">
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Link Foto Profil Wanita</label>
-                                <input type="url" id="admin-bride-photo" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                            <div class="space-y-1.5">
+                                <label class="block text-[11px] font-semibold text-sage-700 uppercase">Foto Profil Wanita</label>
+                                <div class="flex items-start gap-2.5 bg-white p-2 rounded-xl border border-gold/30">
+                                    <img id="admin-bride-photo-preview" src="" class="w-12 h-12 rounded-lg object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Foto Wanita">
+                                    <div class="flex-1 space-y-1.5">
+                                        <div class="flex items-center gap-1.5">
+                                            <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded shadow-sm transition inline-flex items-center gap-1">
+                                                <i class="fas fa-folder-open text-gold-light"></i>
+                                                <span>Pilih Foto</span>
+                                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-bride-photo', 'admin-bride-photo-preview', 600, 0.8)">
+                                            </label>
+                                            <button type="button" onclick="clearImage('admin-bride-photo', 'admin-bride-photo-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded border border-gray-200" title="Hapus foto">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" id="admin-bride-photo" oninput="updateImagePreview('admin-bride-photo', 'admin-bride-photo-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded focus:ring-1 focus:ring-gold focus:outline-none" placeholder="Atau tempel URL foto...">
+                                        <div id="admin-bride-photo-info" class="text-[10px] hidden"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Nama Ayah Wanita</label>
@@ -379,56 +545,187 @@
                     </div>
                 </section>
 
-                <!-- 2.4 GALERI FOTO (6 SLOT) -->
+                <!-- 2.4 GALERI FOTO (6 SLOT DENGAN UPLOAD PERANGKAT) -->
                 <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
                     <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
                         <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
                             <i class="fas fa-camera-retro"></i>
                         </div>
                         <div>
-                            <h2 class="font-serif font-bold text-xl text-sage-900">Galeri Foto (6 Slot Input URL)</h2>
-                            <p class="text-xs text-gray-600">Masukkan tautan gambar langsung (URL) untuk 6 foto di album kenangan.</p>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Galeri Foto (6 Slot Upload & URL)</h2>
+                            <p class="text-xs text-gray-600">Pilih foto dari penyimpanan perangkat Anda atau masukkan tautan URL gambar untuk 6 slot galeri kenangan.</p>
+                        </div>
+                    </div>
+
+                    <!-- Info Banner Kompresi Canvas -->
+                    <div class="p-3.5 bg-green-50/80 rounded-2xl border border-green-200/80 flex items-start gap-3 text-xs">
+                        <div class="w-8 h-8 rounded-xl bg-green-600 text-white flex items-center justify-center text-sm flex-shrink-0 shadow-sm">
+                            <i class="fas fa-bolt text-gold-light"></i>
+                        </div>
+                        <div class="space-y-0.5 text-sage-900">
+                            <span class="font-bold text-green-950 flex items-center gap-1.5">
+                                <span>Penyimpanan Ringan: Kompresi Gambar Otomatis via Canvas</span>
+                                <span class="bg-green-200 text-green-900 text-[10px] px-2 py-0.2 rounded-full font-bold">Aktif</span>
+                            </span>
+                            <p class="text-[11px] text-gray-600 leading-relaxed">
+                                Foto-foto yang Anda upload akan langsung di-resize dan dikompresi di browser (maks. 800px, kualitas optimal) sebelum disimpan. Ini menjaga payload data tetap ringan (~70–120 KB) sehingga undangan sangat cepat dimuat di HP tamu dengan koneksi seluler/4G.
+                            </p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 1 (URL)</label>
-                            <input type="url" id="admin-gallery-1" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+                        <!-- Slot 1 -->
+                        <div class="bg-white/70 p-3 rounded-2xl border border-gold/30 flex items-start gap-3">
+                            <img id="admin-gallery-1-preview" src="" class="w-14 h-14 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Galeri 1">
+                            <div class="flex-1 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-sage-800 uppercase">Foto Galeri 1</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-sm transition inline-flex items-center gap-1">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-gallery-1', 'admin-gallery-1-preview', 800, 0.75)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-gallery-1', 'admin-gallery-1-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded-lg border border-gray-200" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" id="admin-gallery-1" oninput="updateImagePreview('admin-gallery-1', 'admin-gallery-1-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded-lg focus:ring-1 focus:ring-gold focus:outline-none" placeholder="URL atau data gambar...">
+                                <div id="admin-gallery-1-info" class="text-[10px] hidden"></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 2 (URL)</label>
-                            <input type="url" id="admin-gallery-2" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+
+                        <!-- Slot 2 -->
+                        <div class="bg-white/70 p-3 rounded-2xl border border-gold/30 flex items-start gap-3">
+                            <img id="admin-gallery-2-preview" src="" class="w-14 h-14 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Galeri 2">
+                            <div class="flex-1 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-sage-800 uppercase">Foto Galeri 2</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-sm transition inline-flex items-center gap-1">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-gallery-2', 'admin-gallery-2-preview', 800, 0.75)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-gallery-2', 'admin-gallery-2-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded-lg border border-gray-200" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" id="admin-gallery-2" oninput="updateImagePreview('admin-gallery-2', 'admin-gallery-2-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded-lg focus:ring-1 focus:ring-gold focus:outline-none" placeholder="URL atau data gambar...">
+                                <div id="admin-gallery-2-info" class="text-[10px] hidden"></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 3 (URL)</label>
-                            <input type="url" id="admin-gallery-3" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+
+                        <!-- Slot 3 -->
+                        <div class="bg-white/70 p-3 rounded-2xl border border-gold/30 flex items-start gap-3">
+                            <img id="admin-gallery-3-preview" src="" class="w-14 h-14 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Galeri 3">
+                            <div class="flex-1 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-sage-800 uppercase">Foto Galeri 3</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-sm transition inline-flex items-center gap-1">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-gallery-3', 'admin-gallery-3-preview', 800, 0.75)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-gallery-3', 'admin-gallery-3-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded-lg border border-gray-200" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" id="admin-gallery-3" oninput="updateImagePreview('admin-gallery-3', 'admin-gallery-3-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded-lg focus:ring-1 focus:ring-gold focus:outline-none" placeholder="URL atau data gambar...">
+                                <div id="admin-gallery-3-info" class="text-[10px] hidden"></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 4 (URL)</label>
-                            <input type="url" id="admin-gallery-4" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+
+                        <!-- Slot 4 -->
+                        <div class="bg-white/70 p-3 rounded-2xl border border-gold/30 flex items-start gap-3">
+                            <img id="admin-gallery-4-preview" src="" class="w-14 h-14 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Galeri 4">
+                            <div class="flex-1 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-sage-800 uppercase">Foto Galeri 4</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-sm transition inline-flex items-center gap-1">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-gallery-4', 'admin-gallery-4-preview', 800, 0.75)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-gallery-4', 'admin-gallery-4-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded-lg border border-gray-200" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" id="admin-gallery-4" oninput="updateImagePreview('admin-gallery-4', 'admin-gallery-4-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded-lg focus:ring-1 focus:ring-gold focus:outline-none" placeholder="URL atau data gambar...">
+                                <div id="admin-gallery-4-info" class="text-[10px] hidden"></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 5 (URL)</label>
-                            <input type="url" id="admin-gallery-5" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+
+                        <!-- Slot 5 -->
+                        <div class="bg-white/70 p-3 rounded-2xl border border-gold/30 flex items-start gap-3">
+                            <img id="admin-gallery-5-preview" src="" class="w-14 h-14 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Galeri 5">
+                            <div class="flex-1 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-sage-800 uppercase">Foto Galeri 5</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-sm transition inline-flex items-center gap-1">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-gallery-5', 'admin-gallery-5-preview', 800, 0.75)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-gallery-5', 'admin-gallery-5-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded-lg border border-gray-200" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" id="admin-gallery-5" oninput="updateImagePreview('admin-gallery-5', 'admin-gallery-5-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded-lg focus:ring-1 focus:ring-gold focus:outline-none" placeholder="URL atau data gambar...">
+                                <div id="admin-gallery-5-info" class="text-[10px] hidden"></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Slot Foto Galeri 6 (URL)</label>
-                            <input type="url" id="admin-gallery-6" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="https://...">
+
+                        <!-- Slot 6 -->
+                        <div class="bg-white/70 p-3 rounded-2xl border border-gold/30 flex items-start gap-3">
+                            <img id="admin-gallery-6-preview" src="" class="w-14 h-14 rounded-xl object-cover border border-gold/40 shadow-sm bg-cream-100 flex-shrink-0" alt="Galeri 6">
+                            <div class="flex-1 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] font-bold text-sage-800 uppercase">Foto Galeri 6</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <label class="cursor-pointer bg-sage-700 hover:bg-sage-900 text-white text-[10px] font-semibold py-1 px-2.5 rounded-lg shadow-sm transition inline-flex items-center gap-1">
+                                            <i class="fas fa-folder-open text-gold-light"></i>
+                                            <span>Upload</span>
+                                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'admin-gallery-6', 'admin-gallery-6-preview', 800, 0.75)">
+                                        </label>
+                                        <button type="button" onclick="clearImage('admin-gallery-6', 'admin-gallery-6-preview')" class="text-gray-400 hover:text-red-500 text-[10px] p-1 rounded-lg border border-gray-200" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" id="admin-gallery-6" oninput="updateImagePreview('admin-gallery-6', 'admin-gallery-6-preview')" class="w-full px-2.5 py-1 text-[11px] bg-cream-50/50 border border-gold/20 rounded-lg focus:ring-1 focus:ring-gold focus:outline-none" placeholder="URL atau data gambar...">
+                                <div id="admin-gallery-6-info" class="text-[10px] hidden"></div>
+                            </div>
+                        </div>
+                    </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- 2.5 TANDA KASIH (REKENING BANK) -->
                 <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
-                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
-                        <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
-                            <i class="fas fa-wallet"></i>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold/20 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div>
+                                <h2 class="font-serif font-bold text-xl text-sage-900">Tanda Kasih (Rekening Bank)</h2>
+                                <p class="text-xs text-gray-600">Atur nomor rekening amplop digital. <b>Kosongkan semua jika ingin menyembunyikan halaman/seksi Gift</b>.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h2 class="font-serif font-bold text-xl text-sage-900">Tanda Kasih (Rekening Bank)</h2>
-                            <p class="text-xs text-gray-600">Atur 2 nomor rekening tujuan transfer amplop digital.</p>
-                        </div>
+                        <button type="button" onclick="clearAllBankInputs()" class="self-start sm:self-auto text-xs text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 font-semibold px-3.5 py-2 rounded-xl border border-red-200 transition flex items-center gap-1.5" title="Kosongkan rekening agar seksi Gift otomatis hilang">
+                            <i class="fas fa-eye-slash"></i>
+                            <span>Kosongkan & Sembunyikan Gift</span>
+                        </button>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -468,6 +765,82 @@
                                 <label class="block text-[11px] font-semibold text-sage-700 uppercase mb-1">Atas Nama 2</label>
                                 <input type="text" id="admin-bank2-owner" class="w-full px-3.5 py-2 text-sm bg-white border border-gold/30 rounded-lg focus:ring-2 focus:ring-gold focus:outline-none" placeholder="Juliet Capulet">
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2.6 MUSIK & LAGU LATAR (BACKGROUND MUSIC) -->
+                <section class="glass-panel rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                    <div class="flex items-center gap-3 border-b border-gold/20 pb-4">
+                        <div class="w-9 h-9 rounded-xl bg-gold/20 text-gold flex items-center justify-center text-base">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif font-bold text-xl text-sage-900">Musik / Lagu Latar (Backsound Undangan)</h2>
+                            <p class="text-xs text-gray-600">Upload lagu romantis langsung dari memori internal / perangkat Anda atau masukkan tautan URL audio online.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Upload dari Perangkat -->
+                        <div>
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-2">Pilihan 1: Upload File Musik dari Perangkat (Internal Storage)</label>
+                            <div class="border-2 border-dashed border-gold/40 hover:border-gold rounded-2xl p-6 text-center bg-cream-50/50 hover:bg-cream-50 transition relative group cursor-pointer">
+                                <input type="file" id="admin-music-file" accept="audio/*" onchange="handleMusicUpload(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div class="space-y-2 pointer-events-none">
+                                    <div class="w-12 h-12 mx-auto rounded-2xl bg-sage-700/10 group-hover:bg-sage-700/20 text-sage-700 flex items-center justify-center text-2xl transition">
+                                        <i class="fas fa-cloud-upload-alt text-gold"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs font-bold text-sage-900">Klik untuk memilih file audio dari perangkat Anda</span>
+                                        <p class="text-[11px] text-gray-500 mt-0.5">Mendukung file audio seperti MP3, WAV, AAC, M4A, OGG</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status Box File Audio Terpilih -->
+                            <div id="admin-music-status-box" class="mt-3 hidden items-center justify-between p-3.5 bg-sage-100/70 rounded-xl border border-sage-300">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-sage-700 text-gold flex items-center justify-center text-sm">
+                                        <i class="fas fa-file-audio"></i>
+                                    </div>
+                                    <div>
+                                        <div id="admin-music-filename" class="text-xs font-bold text-sage-900 truncate max-w-xs sm:max-w-md">Lagu.mp3</div>
+                                        <div id="admin-music-filesize" class="text-[10px] text-gray-500">File Audio Tersimpan</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="removeUploadedMusic()" class="text-red-500 hover:text-red-700 text-xs font-semibold px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition flex items-center gap-1.5" title="Hapus file audio ini">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Hapus</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Link Audio URL Online -->
+                        <div class="pt-2 border-t border-gold/15">
+                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Pilihan 2: Atau Masukkan Link URL Audio Online (MP3)</label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input type="url" id="admin-music-url" oninput="handleMusicUrlInput()" class="flex-1 px-4 py-2.5 text-xs bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="https://domain.com/musik/wedding-instrumental.mp3">
+                                <button type="button" onclick="testPlayUrlMusic()" class="bg-sage-700 hover:bg-sage-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                                    <i class="fas fa-play text-[10px]"></i>
+                                    <span>Test Audio</span>
+                                </button>
+                            </div>
+                            <p class="text-[11px] text-gray-500 mt-1 italic">
+                                *Catatan: File yang di-upload dari perangkat tersimpan aman di database browser perangkat ini. Jika ingin lagu terdengar di semua perangkat tamu dari internet, Anda juga dapat menyematkan URL MP3 publik.
+                            </p>
+                        </div>
+
+                        <!-- Player Preview Controls -->
+                        <div class="bg-white/80 p-4 rounded-2xl border border-gold/30 space-y-2 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-sage-900 flex items-center gap-2">
+                                    <i class="fas fa-volume-up text-gold"></i>
+                                    <span>Pemutar Audio (Live Preview)</span>
+                                </span>
+                                <span id="admin-music-badge" class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold">Instrumen Default</span>
+                            </div>
+                            <audio id="admin-music-preview-player" controls class="w-full h-10 outline-none"></audio>
                         </div>
                     </div>
                 </section>
@@ -518,8 +891,8 @@
             console.warn("Firebase fallback mode enabled.", e);
         }
 
-        // Default Wedding Content Structure
-        const defaultWeddingData = {
+        // Default Wedding Content Structure (Prioritas dari wedding-data.js)
+        const fallbackWeddingData = {
             cover: {
                 bgUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80",
                 archUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
@@ -568,9 +941,15 @@
                 name: "MANDIRI",
                 number: "987 654 3210",
                 owner: "Juliet Capulet"
+            },
+            music: {
+                url: "",
+                name: "Instrumen Ambient",
+                hasBlob: false
             }
         };
 
+        const defaultWeddingData = (typeof window !== 'undefined' && window.weddingData) ? window.weddingData : fallbackWeddingData;
         window.defaultWeddingData = defaultWeddingData;
 
         // Populate Form Fields
@@ -624,6 +1003,49 @@
             document.getElementById('admin-bank2-name').value = d.bank2?.name || '';
             document.getElementById('admin-bank2-number').value = d.bank2?.number || '';
             document.getElementById('admin-bank2-owner').value = d.bank2?.owner || '';
+
+            // Music
+            document.getElementById('admin-music-url').value = d.music?.url || '';
+            if (d.music?.url) {
+                const player = document.getElementById('admin-music-preview-player');
+                if (player) player.src = d.music.url;
+                const badge = document.getElementById('admin-music-badge');
+                if (badge) {
+                    badge.className = 'text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold';
+                    badge.innerText = 'URL Audio Online';
+                }
+            }
+
+            // Update all image previews
+            if (typeof window.updateImagePreview === 'function') {
+                window.updateImagePreview('admin-cover-bg-url', 'admin-cover-bg-preview');
+                window.updateImagePreview('admin-cover-arch-url', 'admin-cover-arch-preview');
+                window.updateImagePreview('admin-groom-photo', 'admin-groom-photo-preview');
+                window.updateImagePreview('admin-bride-photo', 'admin-bride-photo-preview');
+                for (let i = 1; i <= 6; i++) {
+                    window.updateImagePreview(`admin-gallery-${i}`, `admin-gallery-${i}-preview`);
+                }
+            }
+
+            // Check IndexedDB for uploaded music blob
+            if (typeof window.checkSavedMusicBlob === 'function') {
+                window.checkSavedMusicBlob();
+            }
+
+            // Sync message detail fields
+            const msgDate = document.getElementById('admin-msg-date');
+            const msgTime = document.getElementById('admin-msg-time');
+            const msgLoc = document.getElementById('admin-msg-location');
+            const msgCouple = document.getElementById('admin-msg-couple');
+
+            if (msgDate && !msgDate.value && d.akad?.date) msgDate.value = d.akad.date;
+            if (msgTime && !msgTime.value && d.akad?.time) msgTime.value = d.akad.time;
+            if (msgLoc && !msgLoc.value && d.akad?.location) msgLoc.value = d.akad.location;
+            if (msgCouple && !msgCouple.value && d.groom?.name && d.bride?.name) {
+                const shortG = d.groom.name.replace(/,.*$/, '').trim();
+                const shortB = d.bride.name.replace(/,.*$/, '').trim();
+                msgCouple.value = `${shortG} & ${shortB}`;
+            }
         }
 
         window.populateAdminForm = populateAdminForm;
@@ -637,13 +1059,14 @@
 
         // 1. Fungsi getDoc untuk merender data saat web admin dimuat
         async function loadAdminData() {
+            const masterData = (typeof window !== 'undefined' && window.weddingData) ? window.weddingData : defaultWeddingData;
             let localData = null;
             try {
                 const stored = localStorage.getItem('wedding_custom_data');
                 if (stored) localData = JSON.parse(stored);
             } catch(e) {}
 
-            populateAdminForm(localData || defaultWeddingData);
+            populateAdminForm(localData || masterData);
 
             if (!db || !weddingDocRef) return;
 
@@ -755,14 +1178,19 @@
                     document.getElementById('admin-gallery-6').value.trim() || d.gallery[5]
                 ],
                 bank1: {
-                    name: document.getElementById('admin-bank1-name').value.trim() || d.bank1.name,
-                    number: document.getElementById('admin-bank1-number').value.trim() || d.bank1.number,
-                    owner: document.getElementById('admin-bank1-owner').value.trim() || d.bank1.owner
+                    name: document.getElementById('admin-bank1-name').value.trim(),
+                    number: document.getElementById('admin-bank1-number').value.trim(),
+                    owner: document.getElementById('admin-bank1-owner').value.trim()
                 },
                 bank2: {
-                    name: document.getElementById('admin-bank2-name').value.trim() || d.bank2.name,
-                    number: document.getElementById('admin-bank2-number').value.trim() || d.bank2.number,
-                    owner: document.getElementById('admin-bank2-owner').value.trim() || d.bank2.owner
+                    name: document.getElementById('admin-bank2-name').value.trim(),
+                    number: document.getElementById('admin-bank2-number').value.trim(),
+                    owner: document.getElementById('admin-bank2-owner').value.trim()
+                },
+                music: {
+                    url: document.getElementById('admin-music-url').value.trim(),
+                    name: window.customMusicMeta?.name || (document.getElementById('admin-music-url').value.trim() ? 'URL Audio' : 'Default'),
+                    hasBlob: !!window.hasCustomMusicBlob
                 }
             };
 
@@ -825,7 +1253,379 @@
             }, 3000);
         }
 
-        // 3. Generator Link Undangan (Share Link)
+        // 3. IndexedDB Media Helper
+        const DB_NAME = 'UndanganWeddingDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'media_store';
+
+        function openMediaDB() {
+            return new Promise((resolve, reject) => {
+                if (!window.indexedDB) {
+                    reject(new Error("IndexedDB not supported"));
+                    return;
+                }
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME);
+                    }
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function saveMediaBlob(key, value) {
+            try {
+                const db = await openMediaDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.put(value, key);
+                    req.onsuccess = () => resolve(true);
+                    req.onerror = () => reject(req.error);
+                });
+            } catch(err) {
+                console.warn("IndexedDB save error:", err);
+                return false;
+            }
+        }
+
+        async function getMediaBlob(key) {
+            try {
+                const db = await openMediaDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.get(key);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            } catch(err) {
+                console.warn("IndexedDB get error:", err);
+                return null;
+            }
+        }
+
+        async function deleteMediaBlob(key) {
+            try {
+                const db = await openMediaDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.delete(key);
+                    req.onsuccess = () => resolve(true);
+                    req.onerror = () => reject(req.error);
+                });
+            } catch(err) {
+                console.warn("IndexedDB delete error:", err);
+                return false;
+            }
+        }
+
+        // 4. Image Resizing & Smart Canvas Compression Handlers
+        function compressAndResizeImage(file, maxDimension = 800, quality = 0.75) {
+            return new Promise((resolve, reject) => {
+                const originalBytes = file.size;
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Downscale keeping aspect ratio to ensure light mobile payload
+                        if (width > maxDimension || height > maxDimension) {
+                            if (width > height) {
+                                height = Math.round((height * maxDimension) / width);
+                                width = maxDimension;
+                            } else {
+                                width = Math.round((width * maxDimension) / height);
+                                height = maxDimension;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+
+                        // High quality smoothing settings
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+
+                        // Fill white background (useful for transparent PNG conversion)
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, width, height);
+
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Compression target via Canvas
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+                        // Calculate approximate compressed size in bytes from Base64 string
+                        const base64Str = dataUrl.split(',')[1] || '';
+                        const compressedBytes = Math.round((base64Str.length * 3) / 4);
+
+                        const formatBytes = (bytes) => {
+                            if (bytes < 1024) return bytes + ' B';
+                            const kb = bytes / 1024;
+                            if (kb < 1024) return kb.toFixed(1) + ' KB';
+                            return (kb / 1024).toFixed(2) + ' MB';
+                        };
+
+                        const savings = originalBytes > 0 
+                            ? Math.max(0, Math.round(((originalBytes - compressedBytes) / originalBytes) * 100))
+                            : 0;
+
+                        resolve({
+                            dataUrl,
+                            originalSizeStr: formatBytes(originalBytes),
+                            compressedSizeStr: formatBytes(compressedBytes),
+                            savingsPercent: savings,
+                            width,
+                            height
+                        });
+                    };
+                    img.onerror = () => reject(new Error("Gagal membaca gambar"));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error("Gagal membaca file"));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.handleImageUpload = async function(event, inputId, previewId, maxDimension = 800, quality = 0.75) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast("Harap pilih file gambar (JPG, PNG, WebP, dll)");
+                return;
+            }
+
+            showToast("Mengompresi foto via Canvas...");
+            try {
+                const res = await compressAndResizeImage(file, maxDimension, quality);
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+
+                if (input) input.value = res.dataUrl;
+                if (preview) {
+                    preview.src = res.dataUrl;
+                    preview.classList.remove('hidden');
+                }
+
+                // Show compression info badge
+                const badge = document.getElementById(inputId + '-info');
+                if (badge) {
+                    badge.innerHTML = `<span class="inline-flex items-center gap-1 font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-md"><i class="fas fa-bolt text-gold"></i> ${res.compressedSizeStr} (Hemat ${res.savingsPercent}%) • Siap untuk HP 📱</span>`;
+                    badge.classList.remove('hidden');
+                }
+
+                saveMediaBlob('img_' + inputId, res.dataUrl);
+                showToast(`Foto dikompresi: ${res.originalSizeStr} ➔ ${res.compressedSizeStr} (Hemat ${res.savingsPercent}%)!`);
+            } catch(err) {
+                console.error("Gagal memproses gambar:", err);
+                showToast("Gagal memproses gambar.");
+            }
+        };
+
+        window.updateImagePreview = function(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (!input || !preview) return;
+
+            const val = input.value.trim();
+            const badge = document.getElementById(inputId + '-info');
+
+            if (val) {
+                preview.src = val;
+                preview.classList.remove('hidden');
+                if (badge) {
+                    if (val.startsWith('data:image')) {
+                        const base64Str = val.split(',')[1] || '';
+                        const bytes = Math.round((base64Str.length * 3) / 4);
+                        const kb = (bytes / 1024).toFixed(1);
+                        badge.innerHTML = `<span class="inline-flex items-center gap-1 font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-md"><i class="fas fa-check-circle text-gold"></i> Terkompresi Canvas (~${kb} KB)</span>`;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.innerHTML = `<span class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md font-medium"><i class="fas fa-link text-xs"></i> URL Gambar Online</span>`;
+                        badge.classList.remove('hidden');
+                    }
+                }
+            } else {
+                preview.src = '';
+                if (badge) badge.classList.add('hidden');
+            }
+        };
+
+        window.clearImage = function(inputId, previewId, defaultUrl = '') {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (input) input.value = defaultUrl;
+            if (preview) {
+                preview.src = defaultUrl;
+                if (!defaultUrl) preview.classList.add('hidden');
+            }
+            const badge = document.getElementById(inputId + '-info');
+            if (badge) {
+                badge.innerHTML = '';
+                badge.classList.add('hidden');
+            }
+            deleteMediaBlob('img_' + inputId);
+            showToast("Foto di-reset.");
+        };
+
+        // 5. Music Upload & Audio Controller
+        window.hasCustomMusicBlob = false;
+        window.customMusicMeta = null;
+
+        window.handleMusicUpload = async function(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('audio/') && !file.name.match(/\.(mp3|wav|ogg|m4a|aac)$/i)) {
+                showToast("Harap pilih file audio (MP3, WAV, M4A, dll)");
+                return;
+            }
+
+            showToast("Menyimpan audio ke database browser...");
+            try {
+                await saveMediaBlob('custom_music_blob', file);
+
+                const player = document.getElementById('admin-music-preview-player');
+                const statusBox = document.getElementById('admin-music-status-box');
+                const fileNameEl = document.getElementById('admin-music-filename');
+                const fileSizeEl = document.getElementById('admin-music-filesize');
+                const badge = document.getElementById('admin-music-badge');
+
+                const blobUrl = URL.createObjectURL(file);
+                player.src = blobUrl;
+                player.play().catch(() => {});
+
+                fileNameEl.innerText = file.name;
+                const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+                fileSizeEl.innerText = `${sizeMb} MB • File Audio dari Perangkat`;
+                statusBox.classList.remove('hidden');
+                statusBox.classList.add('flex');
+
+                badge.className = 'text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold';
+                badge.innerText = 'Audio Kustom Aktif';
+
+                window.hasCustomMusicBlob = true;
+                window.customMusicMeta = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    updatedAt: Date.now()
+                };
+
+                showToast("Musik berhasil di-upload dari perangkat!");
+            } catch(err) {
+                console.error("Gagal simpan audio:", err);
+                showToast("Gagal menyimpan audio.");
+            }
+        };
+
+        window.removeUploadedMusic = async function() {
+            if (confirm("Hapus file musik yang telah diunggah dan kembalikan ke default?")) {
+                try {
+                    await deleteMediaBlob('custom_music_blob');
+                    window.hasCustomMusicBlob = false;
+                    window.customMusicMeta = null;
+
+                    const statusBox = document.getElementById('admin-music-status-box');
+                    if (statusBox) {
+                        statusBox.classList.add('hidden');
+                        statusBox.classList.remove('flex');
+                    }
+                    const fileInput = document.getElementById('admin-music-file');
+                    if (fileInput) fileInput.value = '';
+                    const urlInput = document.getElementById('admin-music-url');
+                    if (urlInput) urlInput.value = '';
+
+                    const player = document.getElementById('admin-music-preview-player');
+                    player.pause();
+                    player.src = '';
+
+                    const badge = document.getElementById('admin-music-badge');
+                    badge.className = 'text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold';
+                    badge.innerText = 'Instrumen Default';
+
+                    showToast("Musik kustom dihapus.");
+                } catch(err) {
+                    console.error(err);
+                }
+            }
+        };
+
+        window.handleMusicUrlInput = function() {
+            const url = document.getElementById('admin-music-url').value.trim();
+            const player = document.getElementById('admin-music-preview-player');
+            const badge = document.getElementById('admin-music-badge');
+
+            if (url) {
+                player.src = url;
+                badge.className = 'text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold';
+                badge.innerText = 'URL Audio Online';
+            } else if (!window.hasCustomMusicBlob) {
+                player.src = '';
+                badge.className = 'text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-semibold';
+                badge.innerText = 'Instrumen Default';
+            }
+        };
+
+        window.testPlayUrlMusic = function() {
+            const player = document.getElementById('admin-music-preview-player');
+            const url = document.getElementById('admin-music-url').value.trim();
+            if (!url && !player.src) {
+                showToast("Silakan upload musik atau masukkan URL terlebih dahulu!");
+                return;
+            }
+            if (url && player.src !== url) {
+                player.src = url;
+            }
+            player.play().then(() => {
+                showToast("Memutar audio preview...");
+            }).catch(e => {
+                showToast("Gagal memutar audio. Pastikan format didukung browser.");
+            });
+        };
+
+        window.checkSavedMusicBlob = async function() {
+            try {
+                const blob = await getMediaBlob('custom_music_blob');
+                if (blob) {
+                    window.hasCustomMusicBlob = true;
+                    const player = document.getElementById('admin-music-preview-player');
+                    const statusBox = document.getElementById('admin-music-status-box');
+                    const fileNameEl = document.getElementById('admin-music-filename');
+                    const fileSizeEl = document.getElementById('admin-music-filesize');
+                    const badge = document.getElementById('admin-music-badge');
+
+                    if (player && !player.src) {
+                        player.src = URL.createObjectURL(blob);
+                    }
+                    if (fileNameEl && blob.name) fileNameEl.innerText = blob.name;
+                    if (fileSizeEl && blob.size) {
+                        fileSizeEl.innerText = `${(blob.size / (1024*1024)).toFixed(2)} MB • File Audio dari Perangkat`;
+                    }
+                    if (statusBox) {
+                        statusBox.classList.remove('hidden');
+                        statusBox.classList.add('flex');
+                    }
+                    if (badge) {
+                        badge.className = 'text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold';
+                        badge.innerText = 'Audio Kustom Aktif';
+                    }
+                }
+            } catch(e) {}
+        };
+
+        // 6. Generator Link & Pesan Undangan (WhatsApp)
         function getInvitationBaseUrl() {
             let url = window.location.href.split('?')[0].split('#')[0];
             if (url.endsWith('admin.html')) {
@@ -835,6 +1635,9 @@
             }
             return url;
         }
+
+        window.currentRawGuestLink = '';
+        window.currentFormattedMessage = '';
 
         function generateGuestLink() {
             const input = document.getElementById('admin-guest-input');
@@ -848,59 +1651,290 @@
             const baseUrl = getInvitationBaseUrl();
             const generatedLink = `${baseUrl}?to=${encodeURIComponent(guestName)}`;
 
+            const eventDate = document.getElementById('admin-msg-date')?.value.trim() || '03 Oktober 2026';
+            const eventTime = document.getElementById('admin-msg-time')?.value.trim() || '09.00 Wib s.d selesai';
+            const eventLocation = document.getElementById('admin-msg-location')?.value.trim() || 'Kp. Campaka';
+            
+            let coupleNames = document.getElementById('admin-msg-couple')?.value.trim();
+            if (!coupleNames) {
+                const groom = document.getElementById('admin-groom-name')?.value.trim() || 'Romeo';
+                const bride = document.getElementById('admin-bride-name')?.value.trim() || 'Juliet';
+                const shortGroom = groom.replace(/,.*$/, '').trim();
+                const shortBride = bride.replace(/,.*$/, '').trim();
+                coupleNames = `${shortGroom} & ${shortBride}`;
+            }
+
+            const formattedMessage = `Kepada Yth.
+Bapak/Ibu/Saudara/i
+${guestName}
+
+Assalamu'alaikum Wr. Wb.
+Bismillahirahmanirrahim.
+
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus sahabat, untuk menghadiri acara pernikahan kami.
+
+Pada:
+📅Tanggal: ${eventDate}
+🕘Pukul: ${eventTime}
+📍Tempat: ${eventLocation}
+
+Berikut link untuk info lengkap dari acara kami.
+
+${generatedLink}
+
+Merupakan suatu kebahagiaan bagi kami apabila Bapak/ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu.
+
+Wassalamu'alaikum Wr. Wb 
+
+Terima kasih...
+
+Hormat kami,
+${coupleNames}`;
+
             const resultTextarea = document.getElementById('admin-generated-link');
-            resultTextarea.value = generatedLink;
-            showToast("Link undangan berhasil dibuat!");
+            resultTextarea.value = formattedMessage;
+
+            window.currentRawGuestLink = generatedLink;
+            window.currentFormattedMessage = formattedMessage;
+
+            showToast("Pesan & link undangan berhasil dibuat!");
         }
 
         function copyGuestLink() {
             const linkTextarea = document.getElementById('admin-generated-link');
-            const linkToCopy = linkTextarea.value.trim();
+            const textToCopy = linkTextarea.value.trim();
 
-            if (!linkToCopy) {
-                showToast("Belum ada link! Masukkan nama tamu lalu klik 'Generate Link'.");
+            if (!textToCopy) {
+                showToast("Belum ada pesan! Masukkan nama tamu lalu klik 'Generate Pesan & Link'.");
                 return;
             }
 
+            copyToClipboard(textToCopy, "Pesan undangan berhasil disalin!");
+        }
+
+        function copyOnlyUrl() {
+            if (!window.currentRawGuestLink) {
+                const input = document.getElementById('admin-guest-input');
+                const guestName = input.value.trim();
+                if (guestName) {
+                    const baseUrl = getInvitationBaseUrl();
+                    window.currentRawGuestLink = `${baseUrl}?to=${encodeURIComponent(guestName)}`;
+                }
+            }
+
+            if (!window.currentRawGuestLink) {
+                showToast("Silakan masukkan nama tamu dan generate link!");
+                return;
+            }
+
+            copyToClipboard(window.currentRawGuestLink, "Tautan (URL) undangan disalin!");
+        }
+
+        function copyToClipboard(text, successMsg) {
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(linkToCopy).then(() => {
-                    showToast("Link disalin!");
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(successMsg);
                 }).catch(() => {
-                    fallbackCopy(linkToCopy);
+                    fallbackCopy(text, successMsg);
                 });
             } else {
-                fallbackCopy(linkToCopy);
+                fallbackCopy(text, successMsg);
             }
         }
 
-        function fallbackCopy(text) {
+        function fallbackCopy(text, successMsg = "Teks disalin!") {
             const temp = document.createElement("textarea");
             temp.value = text;
             document.body.appendChild(temp);
             temp.select();
             try {
                 document.execCommand('copy');
-                showToast("Link disalin!");
+                showToast(successMsg);
             } catch (e) {
-                showToast("Gagal menyalin link.");
+                showToast("Gagal menyalin teks.");
             }
             document.body.removeChild(temp);
         }
 
         function shareWhatsApp() {
             const linkTextarea = document.getElementById('admin-generated-link');
-            const link = linkTextarea.value.trim();
-            const guestName = document.getElementById('admin-guest-input').value.trim() || 'Bapak/Ibu/Saudara/i';
+            const message = linkTextarea.value.trim();
 
-            if (!link) {
-                showToast("Silakan generate link terlebih dahulu!");
+            if (!message) {
+                showToast("Silakan masukkan nama tamu dan generate pesan terlebih dahulu!");
                 return;
             }
 
-            const message = `Halo ${guestName},\n\nTanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nInformasi lengkap undangan dapat diakses melalui tautan berikut:\n${link}\n\nTerima kasih atas doa dan restunya!`;
             const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(waUrl, '_blank');
         }
+
+        function openGuestPreview() {
+            if (!window.currentRawGuestLink) {
+                generateGuestLink();
+            }
+            if (window.currentRawGuestLink) {
+                window.open(window.currentRawGuestLink, '_blank');
+            }
+        }
+
+        // 7. Ekspor & Sinkronisasi Data ke VS Code / Netlify
+        function getCurrentAdminFormData() {
+            const d = window.defaultWeddingData || {};
+            return {
+                cover: {
+                    bgUrl: document.getElementById('admin-cover-bg-url')?.value.trim() || d.cover?.bgUrl || '',
+                    archUrl: document.getElementById('admin-cover-arch-url')?.value.trim() || d.cover?.archUrl || '',
+                    dateText: document.getElementById('admin-cover-date-text')?.value.trim() || d.cover?.dateText || ''
+                },
+                groom: {
+                    name: document.getElementById('admin-groom-name')?.value.trim() || d.groom?.name || '',
+                    photo: document.getElementById('admin-groom-photo')?.value.trim() || d.groom?.photo || '',
+                    father: document.getElementById('admin-groom-father')?.value.trim() || d.groom?.father || '',
+                    mother: document.getElementById('admin-groom-mother')?.value.trim() || d.groom?.mother || ''
+                },
+                bride: {
+                    name: document.getElementById('admin-bride-name')?.value.trim() || d.bride?.name || '',
+                    photo: document.getElementById('admin-bride-photo')?.value.trim() || d.bride?.photo || '',
+                    father: document.getElementById('admin-bride-father')?.value.trim() || d.bride?.father || '',
+                    mother: document.getElementById('admin-bride-mother')?.value.trim() || d.bride?.mother || ''
+                },
+                akad: {
+                    date: document.getElementById('admin-akad-date')?.value.trim() || d.akad?.date || '',
+                    time: document.getElementById('admin-akad-time')?.value.trim() || d.akad?.time || '',
+                    location: document.getElementById('admin-akad-location')?.value.trim() || d.akad?.location || '',
+                    address: document.getElementById('admin-akad-address')?.value.trim() || d.akad?.address || '',
+                    maps: document.getElementById('admin-akad-maps')?.value.trim() || d.akad?.maps || ''
+                },
+                resepsi: {
+                    date: document.getElementById('admin-resepsi-date')?.value.trim() || d.resepsi?.date || '',
+                    time: document.getElementById('admin-resepsi-time')?.value.trim() || d.resepsi?.time || '',
+                    location: document.getElementById('admin-resepsi-location')?.value.trim() || d.resepsi?.location || '',
+                    address: document.getElementById('admin-resepsi-address')?.value.trim() || d.resepsi?.address || '',
+                    maps: document.getElementById('admin-resepsi-maps')?.value.trim() || d.resepsi?.maps || ''
+                },
+                gallery: [
+                    document.getElementById('admin-gallery-1')?.value.trim() || d.gallery?.[0] || '',
+                    document.getElementById('admin-gallery-2')?.value.trim() || d.gallery?.[1] || '',
+                    document.getElementById('admin-gallery-3')?.value.trim() || d.gallery?.[2] || '',
+                    document.getElementById('admin-gallery-4')?.value.trim() || d.gallery?.[3] || '',
+                    document.getElementById('admin-gallery-5')?.value.trim() || d.gallery?.[4] || '',
+                    document.getElementById('admin-gallery-6')?.value.trim() || d.gallery?.[5] || ''
+                ],
+                bank1: {
+                    name: document.getElementById('admin-bank1-name')?.value.trim() || '',
+                    number: document.getElementById('admin-bank1-number')?.value.trim() || '',
+                    owner: document.getElementById('admin-bank1-owner')?.value.trim() || ''
+                },
+                bank2: {
+                    name: document.getElementById('admin-bank2-name')?.value.trim() || '',
+                    number: document.getElementById('admin-bank2-number')?.value.trim() || '',
+                    owner: document.getElementById('admin-bank2-owner')?.value.trim() || ''
+                },
+                music: {
+                    url: document.getElementById('admin-music-url')?.value.trim() || d.music?.url || '',
+                    name: window.customMusicMeta?.name || (document.getElementById('admin-music-url')?.value.trim() ? 'URL Audio' : 'Default'),
+                    autoplay: true
+                }
+            };
+        }
+
+        window.clearAllBankInputs = function() {
+            if (confirm("Apakah Anda yakin ingin mengosongkan semua data rekening? Bagian Tanda Kasih / Digital Gift di undangan akan otomatis disembunyikan.")) {
+                const b1Name = document.getElementById('admin-bank1-name');
+                const b1Num = document.getElementById('admin-bank1-number');
+                const b1Owner = document.getElementById('admin-bank1-owner');
+                const b2Name = document.getElementById('admin-bank2-name');
+                const b2Num = document.getElementById('admin-bank2-number');
+                const b2Owner = document.getElementById('admin-bank2-owner');
+
+                if (b1Name) b1Name.value = '';
+                if (b1Num) b1Num.value = '';
+                if (b1Owner) b1Owner.value = '';
+                if (b2Name) b2Name.value = '';
+                if (b2Num) b2Num.value = '';
+                if (b2Owner) b2Owner.value = '';
+
+                showToast("Data rekening dikosongkan. Seksi Gift akan disembunyikan di undangan.");
+            }
+        };
+
+        function generateWeddingDataJsString(data) {
+            return `// wedding-data.js - Data Utama Undangan Pernikahan
+// File ini adalah sumber data permanen untuk index.html dan admin.html.
+// Saat Anda mengganti data pelanggan di sini, data tersebut 100% permanen dan langsung tampil di Netlify untuk semua tamu!
+
+const weddingData = ${JSON.stringify(data, null, 4)};
+
+// Pastikan variabel global dapat diakses
+if (typeof window !== 'undefined') {
+    window.weddingData = weddingData;
+}
+`;
+        }
+
+        window.exportWeddingDataCode = function() {
+            const data = getCurrentAdminFormData();
+            const jsCode = generateWeddingDataJsString(data);
+            copyToClipboard(jsCode, "Kode wedding-data.js berhasil disalin! Buka file wedding-data.js di VS Code lalu paste.");
+        };
+
+        window.downloadWeddingDataFile = function() {
+            const data = getCurrentAdminFormData();
+            const jsCode = generateWeddingDataJsString(data);
+            const blob = new Blob([jsCode], { type: 'application/javascript;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wedding-data.js';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("File wedding-data.js ter-download! Ganti file ini di folder proyek VS Code.");
+        };
+
+        window.downloadClientBackupJson = function() {
+            const data = getCurrentAdminFormData();
+            const groomName = (data.groom?.name || 'pria').replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+            const brideName = (data.bride?.name || 'wanita').replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+            const filename = `klien_${groomName}_${brideName}.json`;
+
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Backup ${filename} berhasil disimpan!`);
+        };
+
+        window.importClientBackupJson = function(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (typeof populateAdminForm === 'function') {
+                        populateAdminForm(imported);
+                    }
+                    try {
+                        localStorage.setItem('wedding_custom_data', JSON.stringify(imported));
+                    } catch(err) {}
+                    showToast(`Data profil klien dari ${file.name} berhasil dimuat!`);
+                } catch(err) {
+                    console.error("Gagal membaca file JSON:", err);
+                    showToast("Format file JSON tidak valid.");
+                }
+            };
+            reader.readAsText(file);
+        };
 
         // Initialize check auth
         document.addEventListener('DOMContentLoaded', () => {

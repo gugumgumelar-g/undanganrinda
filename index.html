@@ -15,6 +15,8 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Master Wedding Data (Data Pelanggan Permanen) -->
+    <script src="wedding-data.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -204,7 +206,8 @@
     <!-- Petals Container for Animated Background Petals -->
     <div id="petals-container"></div>
 
-    <!-- Floating Audio Toggle Button -->
+    <!-- Floating Audio Toggle Button & Hidden Audio Player -->
+    <audio id="wedding-audio-player" loop preload="auto" class="hidden"></audio>
     <button id="music-toggle" onclick="toggleAudio()" class="fixed bottom-6 left-6 z-50 bg-sage-700/90 hover:bg-sage-900 text-gold-light w-12 h-12 rounded-full shadow-2xl backdrop-blur-md flex items-center justify-center border border-gold/40 transition duration-300 transform hover:scale-110 group" title="Putar / Hentikan Musik">
         <div class="absolute inset-0 rounded-full border border-gold/60 audio-pulse pointer-events-none"></div>
         <i id="music-icon" class="fas fa-music text-lg group-hover:rotate-12 transition"></i>
@@ -602,7 +605,7 @@
 
 
         <!-- 2.5 DIGITAL GIFT / AMPLOP DIGITAL -->
-        <section class="py-20 px-6 max-w-4xl mx-auto relative">
+        <section id="gift-section" class="py-20 px-6 max-w-4xl mx-auto relative">
             
             <div class="text-center reveal mb-16">
                 <span class="font-sans text-xs uppercase tracking-[0.3em] text-gold font-bold">Tanda Kasih</span>
@@ -613,10 +616,10 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div id="gift-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                <!-- BANK BCA CARD -->
-                <div class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
+                <!-- BANK 1 CARD -->
+                <div id="bank1-card" class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
                     <div class="flex justify-center mb-4">
                         <div id="bank1-badge" class="bg-blue-900 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
                             BCA
@@ -631,8 +634,8 @@
                     </button>
                 </div>
 
-                <!-- BANK MANDIRI CARD -->
-                <div class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
+                <!-- BANK 2 CARD -->
+                <div id="bank2-card" class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
                     <div class="flex justify-center mb-4">
                         <div id="bank2-badge" class="bg-yellow-600 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
                             MANDIRI
@@ -701,7 +704,7 @@
                         </div>
                         
                         <div id="messages-container" class="space-y-3 max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
-                            <div class="text-center text-gray-400 italic text-xs py-8">Memuat ucapan...</div>
+                            <div class="text-center text-gray-400 italic text-xs py-8">Belum ada ucapan. Jadilah yang pertama memberikan doa!</div>
                         </div>
                     </div>
 
@@ -783,8 +786,8 @@
             console.warn("Firebase fallback mode enabled.", e);
         }
 
-        // Default Wedding Content Structure
-        const defaultWeddingData = {
+        // Default Wedding Content Structure (Prioritas dari wedding-data.js)
+        const fallbackWeddingData = {
             cover: {
                 bgUrl: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80",
                 archUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
@@ -833,9 +836,15 @@
                 name: "MANDIRI",
                 number: "987 654 3210",
                 owner: "Juliet Capulet"
+            },
+            music: {
+                url: "",
+                name: "Instrumen Default",
+                autoplay: true
             }
         };
 
+        const defaultWeddingData = (typeof window !== 'undefined' && window.weddingData) ? window.weddingData : fallbackWeddingData;
         window.defaultWeddingData = defaultWeddingData;
         window.currentWeddingData = defaultWeddingData;
 
@@ -944,35 +953,75 @@
                 });
             }
 
-            // 5. Tanda Kasih (Rekening)
-            if (data.bank1) {
-                window.bankData[0] = { ...data.bank1 };
-                const badge = document.getElementById('bank1-badge');
-                if (badge && data.bank1.name) badge.innerText = data.bank1.name;
+            // 5. Tanda Kasih (Rekening & Kondisi Tampil/Hilang Otomatis)
+            const giftSection = document.getElementById('gift-section');
+            const bank1Card = document.getElementById('bank1-card');
+            const bank2Card = document.getElementById('bank2-card');
+            const giftGrid = document.getElementById('gift-cards-container');
 
-                const num = document.getElementById('bank1-number-text');
-                if (num && data.bank1.number) num.innerText = data.bank1.number;
+            const hasBank1 = data.bank1 && (data.bank1.name?.trim() || data.bank1.number?.trim());
+            const hasBank2 = data.bank2 && (data.bank2.name?.trim() || data.bank2.number?.trim());
 
-                const owner = document.getElementById('bank1-owner-text');
-                if (owner && data.bank1.owner) owner.innerText = `a.n ${data.bank1.owner}`;
+            if (!hasBank1 && !hasBank2) {
+                // Sembunyikan seluruh seksi Digital Gift jika kedua bank kosong
+                if (giftSection) giftSection.classList.add('hidden');
+            } else {
+                if (giftSection) giftSection.classList.remove('hidden');
 
-                const btnText = document.getElementById('bank1-btn-text');
-                if (btnText && data.bank1.name) btnText.innerText = `Salin No. Rekening ${data.bank1.name}`;
+                if (hasBank1) {
+                    if (bank1Card) bank1Card.classList.remove('hidden');
+                    window.bankData[0] = { ...data.bank1 };
+                    const badge = document.getElementById('bank1-badge');
+                    if (badge && data.bank1.name) badge.innerText = data.bank1.name;
+
+                    const num = document.getElementById('bank1-number-text');
+                    if (num && data.bank1.number) num.innerText = data.bank1.number;
+
+                    const owner = document.getElementById('bank1-owner-text');
+                    if (owner && data.bank1.owner) owner.innerText = `a.n ${data.bank1.owner}`;
+
+                    const btnText = document.getElementById('bank1-btn-text');
+                    if (btnText && data.bank1.name) btnText.innerText = `Salin No. Rekening ${data.bank1.name}`;
+                } else {
+                    if (bank1Card) bank1Card.classList.add('hidden');
+                }
+
+                if (hasBank2) {
+                    if (bank2Card) bank2Card.classList.remove('hidden');
+                    window.bankData[1] = { ...data.bank2 };
+                    const badge = document.getElementById('bank2-badge');
+                    if (badge && data.bank2.name) badge.innerText = data.bank2.name;
+
+                    const num = document.getElementById('bank2-number-text');
+                    if (num && data.bank2.number) num.innerText = data.bank2.number;
+
+                    const owner = document.getElementById('bank2-owner-text');
+                    if (owner && data.bank2.owner) owner.innerText = `a.n ${data.bank2.owner}`;
+
+                    const btnText = document.getElementById('bank2-btn-text');
+                    if (btnText && data.bank2.name) btnText.innerText = `Salin No. Rekening ${data.bank2.name}`;
+                } else {
+                    if (bank2Card) bank2Card.classList.add('hidden');
+                }
+
+                // Posisi Card: Jika hanya 1 bank diisi, posisikan card di tengah (center)
+                if (giftGrid) {
+                    if (hasBank1 && !hasBank2) {
+                        giftGrid.className = 'flex justify-center max-w-md mx-auto';
+                    } else if (!hasBank1 && hasBank2) {
+                        giftGrid.className = 'flex justify-center max-w-md mx-auto';
+                    } else {
+                        giftGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-8';
+                    }
+                }
             }
 
-            if (data.bank2) {
-                window.bankData[1] = { ...data.bank2 };
-                const badge = document.getElementById('bank2-badge');
-                if (badge && data.bank2.name) badge.innerText = data.bank2.name;
-
-                const num = document.getElementById('bank2-number-text');
-                if (num && data.bank2.number) num.innerText = data.bank2.number;
-
-                const owner = document.getElementById('bank2-owner-text');
-                if (owner && data.bank2.owner) owner.innerText = `a.n ${data.bank2.owner}`;
-
-                const btnText = document.getElementById('bank2-btn-text');
-                if (btnText && data.bank2.name) btnText.innerText = `Salin No. Rekening ${data.bank2.name}`;
+            // 6. Musik Undangan
+            if (data.music && data.music.url) {
+                const audioPlayer = document.getElementById('wedding-audio-player');
+                if (audioPlayer && audioPlayer.src !== data.music.url) {
+                    audioPlayer.src = data.music.url;
+                }
             }
         }
 
@@ -980,14 +1029,15 @@
 
         // 1. Fungsi getDoc untuk merender data saat web dimuat
         async function loadWeddingData() {
-            // First load from localStorage for instantaneous UI rendering
+            // First load from wedding-data.js or localStorage for instantaneous UI rendering
+            const masterData = (typeof window !== 'undefined' && window.weddingData) ? window.weddingData : defaultWeddingData;
             let localData = null;
             try {
                 const stored = localStorage.getItem('wedding_custom_data');
                 if (stored) localData = JSON.parse(stored);
             } catch(e) {}
 
-            applyDataToPage(localData || defaultWeddingData);
+            applyDataToPage(localData || masterData);
 
             if (!db || !weddingDocRef) {
                 return;
@@ -1064,10 +1114,11 @@
         }
 
         async function initGuestbook() {
-            let localMessages = [
-                { name: 'Budi & Keluarga', attendance: 'Hadir', message: 'Selamat Romeo & Juliet! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Aamiin!', timestamp: Date.now() - 86400000 },
-                { name: 'Siti Rahma', attendance: 'Hadir', message: 'Happy wedding day! Bahagia selamanya ya kalian.', timestamp: Date.now() - 36000000 }
-            ];
+            let localMessages = [];
+            try {
+                const stored = localStorage.getItem('wedding_guest_messages');
+                if (stored) localMessages = JSON.parse(stored);
+            } catch(e) {}
 
             if (!auth || !db) {
                 renderMessages(localMessages);
@@ -1082,6 +1133,10 @@
                         timestamp: Date.now()
                     });
                     
+                    try {
+                        localStorage.setItem('wedding_guest_messages', JSON.stringify(localMessages));
+                    } catch(err) {}
+
                     renderMessages(localMessages);
                     form.reset();
                     showToast("Ucapan Anda berhasil terkirim!");
@@ -1161,10 +1216,40 @@
 
     <!-- GENERAL INTERACTIVE SCRIPT -->
     <script>
-        // 1. Audio Synth / Music Controller
+        // 1. Audio Controller (Mendukung File Upload dari Perangkat, URL MP3, atau Synth Fallback)
         let isPlaying = false;
         let audioCtx = null;
         let timerId = null;
+        let customAudio = null;
+
+        function getAudioElement() {
+            if (!customAudio) customAudio = document.getElementById('wedding-audio-player');
+            return customAudio;
+        }
+
+        // Cek apakah ada file musik yang di-upload dari panel admin di IndexedDB
+        function initIndexedDBAudio() {
+            if (!window.indexedDB) return;
+            try {
+                const req = indexedDB.open('UndanganWeddingDB', 1);
+                req.onsuccess = (e) => {
+                    const db = e.target.result;
+                    if (db.objectStoreNames.contains('media_store')) {
+                        const tx = db.transaction('media_store', 'readonly');
+                        const store = tx.objectStore('media_store');
+                        const getBlob = store.get('custom_music_blob');
+                        getBlob.onsuccess = () => {
+                            if (getBlob.result) {
+                                const player = getAudioElement();
+                                if (player) {
+                                    player.src = URL.createObjectURL(getBlob.result);
+                                }
+                            }
+                        };
+                    }
+                };
+            } catch(e) {}
+        }
 
         function playAmbientMelody() {
             if (!audioCtx) {
@@ -1206,14 +1291,29 @@
 
         function toggleAudio() {
             const icon = document.getElementById('music-icon');
+            const player = getAudioElement();
+
             if (isPlaying) {
                 isPlaying = false;
+                if (player && player.src && !player.paused) {
+                    player.pause();
+                }
                 if (timerId) clearInterval(timerId);
                 icon.className = 'fas fa-volume-mute text-lg';
             } else {
                 isPlaying = true;
-                playAmbientMelody();
-                icon.className = 'fas fa-music text-lg';
+                if (player && player.src) {
+                    player.play().then(() => {
+                        icon.className = 'fas fa-music text-lg';
+                    }).catch(err => {
+                        console.warn("Player play gagal, beralih ke melodi synth:", err);
+                        playAmbientMelody();
+                        icon.className = 'fas fa-music text-lg';
+                    });
+                } else {
+                    playAmbientMelody();
+                    icon.className = 'fas fa-music text-lg';
+                }
             }
         }
 
@@ -1422,6 +1522,7 @@
             initScrollReveal();
             initGuestName();
             initEasterEggTrigger();
+            initIndexedDBAudio();
         });
     </script>
 </body>
