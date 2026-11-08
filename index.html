@@ -925,6 +925,14 @@
 
                 const akadMaps = document.getElementById('akad-maps-link');
                 if (akadMaps && data.akad.maps) akadMaps.href = data.akad.maps;
+
+                // Restart countdown berdasarkan tanggal akad yang baru
+                if (data.akad.date && typeof parseIndonesianDate === 'function') {
+                    const newTarget = parseIndonesianDate(data.akad.date, data.akad.time);
+                    if (newTarget && typeof startCountdown === 'function') {
+                        startCountdown(newTarget);
+                    }
+                }
             }
 
             if (data.resepsi) {
@@ -1231,7 +1239,13 @@
         function initIndexedDBAudio() {
             if (!window.indexedDB) return;
             try {
-                const req = indexedDB.open('UndanganWeddingDB', 1);
+                const req = indexedDB.open('UndanganWeddingDB_v2', 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('media_store')) {
+                        db.createObjectStore('media_store');
+                    }
+                };
                 req.onsuccess = (e) => {
                     const db = e.target.result;
                     if (db.objectStoreNames.contains('media_store')) {
@@ -1243,6 +1257,7 @@
                                 const player = getAudioElement();
                                 if (player) {
                                     player.src = URL.createObjectURL(getBlob.result);
+                                    player.load();
                                 }
                             }
                         };
@@ -1350,15 +1365,82 @@
             }
         }
 
-        // 4. Countdown Timer
-        function startCountdown() {
-            const targetDate = new Date("Dec 31, 2026 08:00:00").getTime();
+        // 4. Countdown Timer (Dinamis - membaca tanggal dari data undangan)
+        let countdownInterval = null;
+
+        // Parser tanggal Indonesia: "Minggu, 31 Desember 2026" atau "03 Oktober 2026"
+        function parseIndonesianDate(dateStr, timeStr) {
+            if (!dateStr) return null;
+
+            const bulanMap = {
+                'januari': 0, 'februari': 1, 'maret': 2, 'april': 3,
+                'mei': 4, 'juni': 5, 'juli': 6, 'agustus': 7,
+                'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
+            };
+
+            // Hapus nama hari jika ada (misal: "Minggu, ")
+            let cleaned = dateStr.replace(/^[a-zA-Z]+,?\s*/i, '').trim();
+
+            // Coba parse format: "31 Desember 2026" atau "03 Oktober 2026"
+            const match = cleaned.match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+            if (!match) return null;
+
+            const day = parseInt(match[1], 10);
+            const monthName = match[2].toLowerCase();
+            const year = parseInt(match[3], 10);
+            const month = bulanMap[monthName];
+
+            if (month === undefined || isNaN(day) || isNaN(year)) return null;
+
+            // Coba ambil jam dari timeStr: "Pukul 08.00 WIB - 10.00 WIB" -> ambil jam pertama (08:00)
+            let hours = 8, minutes = 0;
+            if (timeStr) {
+                const timeMatch = timeStr.match(/(\d{1,2})[.:](\d{2})/);
+                if (timeMatch) {
+                    hours = parseInt(timeMatch[1], 10);
+                    minutes = parseInt(timeMatch[2], 10);
+                }
+            }
+
+            return new Date(year, month, day, hours, minutes, 0).getTime();
+        }
+
+        function startCountdown(targetTimestamp) {
+            // Hentikan countdown lama jika ada
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Jika tidak ada target, coba ambil dari data undangan yang sudah dimuat
+            if (!targetTimestamp) {
+                const wd = window.currentWeddingData || window.weddingData;
+                if (wd && wd.akad) {
+                    targetTimestamp = parseIndonesianDate(wd.akad.date, wd.akad.time);
+                }
+            }
+
+            // Fallback ke tanggal default jika parse gagal
+            if (!targetTimestamp) {
+                targetTimestamp = new Date("Dec 31, 2026 08:00:00").getTime();
+            }
 
             function update() {
                 const now = new Date().getTime();
-                const diff = targetDate - now;
+                const diff = targetTimestamp - now;
 
-                if (diff <= 0) return;
+                const daysEl = document.getElementById('cover-days');
+                const hoursEl = document.getElementById('cover-hours');
+                const minsEl = document.getElementById('cover-mins');
+                const secsEl = document.getElementById('cover-secs');
+
+                if (diff <= 0) {
+                    if (daysEl) daysEl.innerText = '00';
+                    if (hoursEl) hoursEl.innerText = '00';
+                    if (minsEl) minsEl.innerText = '00';
+                    if (secsEl) secsEl.innerText = '00';
+                    return;
+                }
 
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1367,14 +1449,14 @@
 
                 const format = (n) => n < 10 ? '0' + n : n;
 
-                document.getElementById('cover-days').innerText = format(days);
-                document.getElementById('cover-hours').innerText = format(hours);
-                document.getElementById('cover-mins').innerText = format(mins);
-                document.getElementById('cover-secs').innerText = format(secs);
+                if (daysEl) daysEl.innerText = format(days);
+                if (hoursEl) hoursEl.innerText = format(hours);
+                if (minsEl) minsEl.innerText = format(mins);
+                if (secsEl) secsEl.innerText = format(secs);
             }
 
             update();
-            setInterval(update, 1000);
+            countdownInterval = setInterval(update, 1000);
         }
 
         // 5. Scroll Reveal Observer

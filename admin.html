@@ -786,7 +786,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-2">Pilihan 1: Upload File Musik dari Perangkat (Internal Storage)</label>
                             <div class="border-2 border-dashed border-gold/40 hover:border-gold rounded-2xl p-6 text-center bg-cream-50/50 hover:bg-cream-50 transition relative group cursor-pointer">
-                                <input type="file" id="admin-music-file" accept="audio/*" onchange="handleMusicUpload(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <input type="file" id="admin-music-file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac" onchange="handleMusicUpload(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                 <div class="space-y-2 pointer-events-none">
                                     <div class="w-12 h-12 mx-auto rounded-2xl bg-sage-700/10 group-hover:bg-sage-700/20 text-sage-700 flex items-center justify-center text-2xl transition">
                                         <i class="fas fa-cloud-upload-alt text-gold"></i>
@@ -799,9 +799,9 @@
                             </div>
 
                             <!-- Status Box File Audio Terpilih -->
-                            <div id="admin-music-status-box" class="mt-3 hidden items-center justify-between p-3.5 bg-sage-100/70 rounded-xl border border-sage-300">
+                            <div id="admin-music-status-box" class="mt-3 hidden flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 bg-sage-100/70 rounded-xl border border-sage-300">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-lg bg-sage-700 text-gold flex items-center justify-center text-sm">
+                                    <div class="w-9 h-9 rounded-lg bg-sage-700 text-gold flex items-center justify-center text-sm flex-shrink-0">
                                         <i class="fas fa-file-audio"></i>
                                     </div>
                                     <div>
@@ -809,26 +809,44 @@
                                         <div id="admin-music-filesize" class="text-[10px] text-gray-500">File Audio Tersimpan</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="removeUploadedMusic()" class="text-red-500 hover:text-red-700 text-xs font-semibold px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition flex items-center gap-1.5" title="Hapus file audio ini">
-                                    <i class="fas fa-trash-alt"></i>
-                                    <span>Hapus</span>
-                                </button>
+                                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                    <button type="button" onclick="downloadCurrentMusicAsMp3()" class="bg-white hover:bg-cream-100 text-sage-900 border border-gold/40 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5" title="Download file audio ini sebagai musik.mp3 untuk ditaruh di folder proyek VS Code">
+                                        <i class="fas fa-download text-gold"></i>
+                                        <span>Download musik.mp3</span>
+                                    </button>
+                                    <button type="button" onclick="removeUploadedMusic()" class="text-red-500 hover:text-red-700 text-xs font-semibold px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition flex items-center gap-1.5" title="Hapus file audio ini">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <span>Hapus</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Link Audio URL Online -->
-                        <div class="pt-2 border-t border-gold/15">
-                            <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider mb-1.5">Pilihan 2: Atau Masukkan Link URL Audio Online (MP3)</label>
+                        <!-- Link Audio URL Online & File Lokal musik.mp3 -->
+                        <div class="pt-3 border-t border-gold/15 space-y-2">
+                            <div class="flex items-center justify-between flex-wrap gap-2">
+                                <label class="block text-xs font-semibold text-sage-800 uppercase tracking-wider">Pilihan 2: File Musik di Folder Proyek atau Link URL Online</label>
+                                <button type="button" onclick="setLocalProjectMusic()" class="text-[11px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300/80 px-2.5 py-1 rounded-lg transition inline-flex items-center gap-1.5 shadow-sm">
+                                    <i class="fas fa-star text-gold"></i>
+                                    <span>Gunakan File musik.mp3 Lokal (Paling Rekomendasi)</span>
+                                </button>
+                            </div>
                             <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="url" id="admin-music-url" oninput="handleMusicUrlInput()" class="flex-1 px-4 py-2.5 text-xs bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="https://domain.com/musik/wedding-instrumental.mp3">
+                                <input type="text" id="admin-music-url" oninput="handleMusicUrlInput()" class="flex-1 px-4 py-2.5 text-xs bg-white border border-gold/30 rounded-xl focus:ring-2 focus:ring-gold focus:outline-none transition" placeholder="musik.mp3 atau https://domain.com/lagu.mp3">
                                 <button type="button" onclick="testPlayUrlMusic()" class="bg-sage-700 hover:bg-sage-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center justify-center gap-1.5">
                                     <i class="fas fa-play text-[10px]"></i>
                                     <span>Test Audio</span>
                                 </button>
                             </div>
-                            <p class="text-[11px] text-gray-500 mt-1 italic">
-                                *Catatan: File yang di-upload dari perangkat tersimpan aman di database browser perangkat ini. Jika ingin lagu terdengar di semua perangkat tamu dari internet, Anda juga dapat menyematkan URL MP3 publik.
-                            </p>
+                            <div class="p-3 bg-amber-50/70 border border-amber-200/70 rounded-xl text-[11px] text-sage-900 leading-relaxed space-y-1">
+                                <div class="font-bold flex items-center gap-1 text-amber-800">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Tips Penting untuk Netlify & Tamu HP:</span>
+                                </div>
+                                <p class="text-gray-600">
+                                    Agar lagu pernikahan <b>100% diputar di semua HP tamu tanpa gagal</b> saat disebar lewat internet, cara termudah adalah meletakkan file lagu MP3 Anda langsung di dalam folder proyek VS Code dengan nama <code class="bg-amber-100 px-1 py-0.5 rounded font-mono text-amber-900 font-bold">musik.mp3</code>, lalu klik tombol kuning di atas. File tersebut akan ikut ter-upload otomatis saat Anda deploy ke Netlify!
+                                </p>
+                            </div>
                         </div>
 
                         <!-- Player Preview Controls -->
@@ -1254,14 +1272,14 @@
         }
 
         // 3. IndexedDB Media Helper
-        const DB_NAME = 'UndanganWeddingDB';
+        const DB_NAME = 'UndanganWeddingDB_v2';
         const DB_VERSION = 1;
         const STORE_NAME = 'media_store';
 
         function openMediaDB() {
             return new Promise((resolve, reject) => {
                 if (!window.indexedDB) {
-                    reject(new Error("IndexedDB not supported"));
+                    reject(new Error("IndexedDB tidak didukung oleh browser ini"));
                     return;
                 }
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -1272,19 +1290,27 @@
                     }
                 };
                 request.onsuccess = (e) => resolve(e.target.result);
-                request.onerror = (e) => reject(e.target.error);
+                request.onerror = (e) => reject(e.target.error || new Error("Gagal membuka IndexedDB"));
             });
         }
 
         async function saveMediaBlob(key, value) {
             try {
                 const db = await openMediaDB();
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    console.warn(`ObjectStore ${STORE_NAME} belum siap.`);
+                    return false;
+                }
                 return new Promise((resolve, reject) => {
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const req = store.put(value, key);
-                    req.onsuccess = () => resolve(true);
-                    req.onerror = () => reject(req.error);
+                    try {
+                        const tx = db.transaction(STORE_NAME, 'readwrite');
+                        const store = tx.objectStore(STORE_NAME);
+                        const req = store.put(value, key);
+                        req.onsuccess = () => resolve(true);
+                        req.onerror = () => reject(req.error || new Error("Gagal menyimpan ke ObjectStore"));
+                    } catch(txErr) {
+                        reject(txErr);
+                    }
                 });
             } catch(err) {
                 console.warn("IndexedDB save error:", err);
@@ -1295,12 +1321,17 @@
         async function getMediaBlob(key) {
             try {
                 const db = await openMediaDB();
+                if (!db.objectStoreNames.contains(STORE_NAME)) return null;
                 return new Promise((resolve, reject) => {
-                    const tx = db.transaction(STORE_NAME, 'readonly');
-                    const store = tx.objectStore(STORE_NAME);
-                    const req = store.get(key);
-                    req.onsuccess = () => resolve(req.result);
-                    req.onerror = () => reject(req.error);
+                    try {
+                        const tx = db.transaction(STORE_NAME, 'readonly');
+                        const store = tx.objectStore(STORE_NAME);
+                        const req = store.get(key);
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => reject(req.error || new Error("Gagal membaca ObjectStore"));
+                    } catch(txErr) {
+                        reject(txErr);
+                    }
                 });
             } catch(err) {
                 console.warn("IndexedDB get error:", err);
@@ -1311,12 +1342,17 @@
         async function deleteMediaBlob(key) {
             try {
                 const db = await openMediaDB();
+                if (!db.objectStoreNames.contains(STORE_NAME)) return false;
                 return new Promise((resolve, reject) => {
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const req = store.delete(key);
-                    req.onsuccess = () => resolve(true);
-                    req.onerror = () => reject(req.error);
+                    try {
+                        const tx = db.transaction(STORE_NAME, 'readwrite');
+                        const store = tx.objectStore(STORE_NAME);
+                        const req = store.delete(key);
+                        req.onsuccess = () => resolve(true);
+                        req.onerror = () => reject(req.error || new Error("Gagal menghapus dari ObjectStore"));
+                    } catch(txErr) {
+                        reject(txErr);
+                    }
                 });
             } catch(err) {
                 console.warn("IndexedDB delete error:", err);
@@ -1481,20 +1517,31 @@
 
         // 5. Music Upload & Audio Controller
         window.hasCustomMusicBlob = false;
+        window.customMusicBlobData = null;
         window.customMusicMeta = null;
 
         window.handleMusicUpload = async function(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
 
-            if (!file.type.startsWith('audio/') && !file.name.match(/\.(mp3|wav|ogg|m4a|aac)$/i)) {
-                showToast("Harap pilih file audio (MP3, WAV, M4A, dll)");
+            const fileName = (file.name || '').toLowerCase();
+            const isAudioExt = /\.(mp3|wav|ogg|m4a|aac|flac|wma)$/i.test(fileName);
+            const isAudioMime = file.type && file.type.startsWith('audio/');
+
+            if (!isAudioExt && !isAudioMime) {
+                showToast("Harap pilih file audio (MP3, WAV, M4A, OGG, dll)");
                 return;
             }
 
-            showToast("Menyimpan audio ke database browser...");
+            showToast("Menyimpan audio ke memori browser...");
             try {
-                await saveMediaBlob('custom_music_blob', file);
+                // Bungkus sebagai Blob murni agar aman di-clone ke IndexedDB
+                const safeBlob = new Blob([file], { type: file.type || 'audio/mpeg' });
+                safeBlob.name = file.name;
+                window.customMusicBlobData = safeBlob;
+
+                // Simpan ke IndexedDB
+                await saveMediaBlob('custom_music_blob', safeBlob);
 
                 const player = document.getElementById('admin-music-preview-player');
                 const statusBox = document.getElementById('admin-music-status-box');
@@ -1502,31 +1549,63 @@
                 const fileSizeEl = document.getElementById('admin-music-filesize');
                 const badge = document.getElementById('admin-music-badge');
 
-                const blobUrl = URL.createObjectURL(file);
-                player.src = blobUrl;
-                player.play().catch(() => {});
+                const blobUrl = URL.createObjectURL(safeBlob);
+                if (player) {
+                    player.src = blobUrl;
+                    player.load();
+                    player.play().catch(() => {});
+                }
 
-                fileNameEl.innerText = file.name;
+                if (fileNameEl) fileNameEl.innerText = file.name;
                 const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
-                fileSizeEl.innerText = `${sizeMb} MB • File Audio dari Perangkat`;
-                statusBox.classList.remove('hidden');
-                statusBox.classList.add('flex');
+                if (fileSizeEl) fileSizeEl.innerText = `${sizeMb} MB • File Audio dari Perangkat`;
+                if (statusBox) {
+                    statusBox.classList.remove('hidden');
+                    statusBox.classList.add('flex');
+                }
 
-                badge.className = 'text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold';
-                badge.innerText = 'Audio Kustom Aktif';
+                if (badge) {
+                    badge.className = 'text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold';
+                    badge.innerText = 'Audio Kustom Aktif';
+                }
 
                 window.hasCustomMusicBlob = true;
                 window.customMusicMeta = {
                     name: file.name,
                     size: file.size,
-                    type: file.type,
+                    type: file.type || 'audio/mpeg',
                     updatedAt: Date.now()
                 };
 
                 showToast("Musik berhasil di-upload dari perangkat!");
             } catch(err) {
                 console.error("Gagal simpan audio:", err);
-                showToast("Gagal menyimpan audio.");
+                showToast("Gagal menyimpan audio: " + (err.message || 'Format tidak didukung'));
+            }
+        };
+
+        window.downloadCurrentMusicAsMp3 = function() {
+            if (!window.customMusicBlobData) {
+                showToast("Belum ada file musik yang dipilih.");
+                return;
+            }
+            const blobUrl = URL.createObjectURL(window.customMusicBlobData);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = 'musik.mp3';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+            showToast("File 'musik.mp3' ter-download! Silakan taruh di folder proyek VS Code.");
+        };
+
+        window.setLocalProjectMusic = function() {
+            const input = document.getElementById('admin-music-url');
+            if (input) {
+                input.value = 'musik.mp3';
+                handleMusicUrlInput();
+                showToast("URL Musik diset ke 'musik.mp3'! Taruh file lagu bernama 'musik.mp3' di folder proyek.");
             }
         };
 
@@ -1535,6 +1614,7 @@
                 try {
                     await deleteMediaBlob('custom_music_blob');
                     window.hasCustomMusicBlob = false;
+                    window.customMusicBlobData = null;
                     window.customMusicMeta = null;
 
                     const statusBox = document.getElementById('admin-music-status-box');
@@ -1936,9 +2016,12 @@ if (typeof window !== 'undefined') {
             reader.readAsText(file);
         };
 
-        // Initialize check auth
+        // Initialize check auth & check saved audio
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
+            if (typeof window.checkSavedMusicBlob === 'function') {
+                window.checkSavedMusicBlob();
+            }
         });
     </script>
 </body>
