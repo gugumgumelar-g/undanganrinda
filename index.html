@@ -16,7 +16,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Master Wedding Data (Data Pelanggan Permanen) -->
-    <script src="wedding-data.js"></script>
+    <script src="wedding-data.js?v=2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -207,7 +207,7 @@
     <div id="petals-container"></div>
 
     <!-- Floating Audio Toggle Button & Hidden Audio Player -->
-    <audio id="wedding-audio-player" loop preload="auto" class="hidden"></audio>
+    <audio id="wedding-audio-player" src="musik.mp3" loop preload="auto" class="hidden"></audio>
     <button id="music-toggle" onclick="toggleAudio()" class="fixed bottom-6 left-6 z-50 bg-sage-700/90 hover:bg-sage-900 text-gold-light w-12 h-12 rounded-full shadow-2xl backdrop-blur-md flex items-center justify-center border border-gold/40 transition duration-300 transform hover:scale-110 group" title="Putar / Hentikan Musik">
         <div class="absolute inset-0 rounded-full border border-gold/60 audio-pulse pointer-events-none"></div>
         <i id="music-icon" class="fas fa-music text-lg group-hover:rotate-12 transition"></i>
@@ -1019,10 +1019,14 @@
             }
 
             // 6. Musik Undangan
-            if (data.music && data.music.url) {
+            if (data.music) {
+                const targetMusicUrl = data.music.url || data.music.name || 'musik.mp3';
                 const audioPlayer = document.getElementById('wedding-audio-player');
-                if (audioPlayer && audioPlayer.src !== data.music.url) {
-                    audioPlayer.src = data.music.url;
+                if (audioPlayer && targetMusicUrl) {
+                    if (!audioPlayer.src || !audioPlayer.src.includes(targetMusicUrl)) {
+                        audioPlayer.src = targetMusicUrl;
+                        audioPlayer.load();
+                    }
                 }
             }
         }
@@ -1311,7 +1315,11 @@
                 icon.className = 'fas fa-volume-mute text-lg';
             } else {
                 isPlaying = true;
-                if (player && player.src) {
+                if (player) {
+                    if (!player.src || player.src === window.location.href) {
+                        player.src = 'musik.mp3';
+                        player.load();
+                    }
                     player.play().then(() => {
                         icon.className = 'fas fa-music text-lg';
                     }).catch(err => {

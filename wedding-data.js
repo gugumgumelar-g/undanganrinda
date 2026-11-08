@@ -53,7 +53,7 @@ const weddingData = {
         "owner": ""
     },
     "music": {
-        "url": "",
+        "url": "musik.mp3",
         "name": "musik.mp3",
         "autoplay": true
     }

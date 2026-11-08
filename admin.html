@@ -1206,7 +1206,7 @@
                     owner: document.getElementById('admin-bank2-owner').value.trim()
                 },
                 music: {
-                    url: document.getElementById('admin-music-url').value.trim(),
+                    url: document.getElementById('admin-music-url').value.trim() || window.customMusicMeta?.name || 'musik.mp3',
                     name: window.customMusicMeta?.name || (document.getElementById('admin-music-url').value.trim() ? 'URL Audio' : 'Default'),
                     hasBlob: !!window.hasCustomMusicBlob
                 }
@@ -1569,6 +1569,11 @@
                     badge.innerText = 'Audio Kustom Aktif';
                 }
 
+                const urlInput = document.getElementById('admin-music-url');
+                if (urlInput && !urlInput.value.trim()) {
+                    urlInput.value = 'musik.mp3';
+                }
+
                 window.hasCustomMusicBlob = true;
                 window.customMusicMeta = {
                     name: file.name,
@@ -1577,7 +1582,7 @@
                     updatedAt: Date.now()
                 };
 
-                showToast("Musik berhasil di-upload dari perangkat!");
+                showToast("Musik berhasil di-upload! Otomatis diatur ke musik.mp3.");
             } catch(err) {
                 console.error("Gagal simpan audio:", err);
                 showToast("Gagal menyimpan audio: " + (err.message || 'Format tidak didukung'));
@@ -1912,7 +1917,7 @@ ${coupleNames}`;
                     owner: document.getElementById('admin-bank2-owner')?.value.trim() || ''
                 },
                 music: {
-                    url: document.getElementById('admin-music-url')?.value.trim() || d.music?.url || '',
+                    url: document.getElementById('admin-music-url')?.value.trim() || window.customMusicMeta?.name || d.music?.url || 'musik.mp3',
                     name: window.customMusicMeta?.name || (document.getElementById('admin-music-url')?.value.trim() ? 'URL Audio' : 'Default'),
                     autoplay: true
                 }
