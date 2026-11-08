@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan - Romeo & Juliet</title>
+    <title>Undangan Pernikahan - Fajar & Rinda</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,6 +17,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Master Wedding Data (Data Pelanggan Permanen) -->
     <script src="wedding-data.js?v=3"></script>
+    <script>
+        // Fast Boot: Parse nama penerima (?to=...) dan pasangan langsung di awal untuk mencegah glitch/flicker
+        (function() {
+            try {
+                var p = new URLSearchParams(window.location.search);
+                window.__guestName = (p.get('to') || p.get('n') || '').trim();
+                var d = window.weddingData;
+                if (d && d.groom && d.bride) {
+                    var g = d.groom.name.replace(/,.*$/, '').trim().split(' ')[0] || d.groom.name;
+                    var b = d.bride.name.replace(/,.*$/, '').trim().split(' ')[0] || d.bride.name;
+                    document.title = "Undangan Pernikahan - " + g + " & " + b;
+                }
+            } catch(e) {}
+        })();
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -218,7 +233,12 @@
         
         <!-- Background Image & Semi-transparent Overlay -->
         <div class="absolute inset-0 z-0">
-            <img id="cover-bg-img" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80" alt="Wedding Background" class="w-full h-full object-cover">
+            <img id="cover-bg-img" alt="Wedding Background" class="w-full h-full object-cover">
+            <script>
+                if (window.weddingData && window.weddingData.cover && window.weddingData.cover.bgUrl) {
+                    document.getElementById('cover-bg-img').src = window.weddingData.cover.bgUrl;
+                }
+            </script>
             <div class="absolute inset-0 bg-sage-900/75 backdrop-blur-[2px]"></div>
         </div>
 
@@ -251,7 +271,12 @@
             <div class="absolute -inset-3 rounded-t-full rounded-b-2xl border-2 border-gold/60 pointer-events-none"></div>
             
             <div class="w-52 h-72 md:w-64 md:h-88 arch-frame overflow-hidden shadow-2xl border-4 border-white relative group">
-                <img id="cover-arch-img" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Romeo & Juliet" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000">
+                <img id="cover-arch-img" alt="Fajar & Rinda" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000">
+                <script>
+                    if (window.weddingData && window.weddingData.cover && window.weddingData.cover.archUrl) {
+                        document.getElementById('cover-arch-img').src = window.weddingData.cover.archUrl;
+                    }
+                </script>
                 <div class="absolute inset-0 bg-gradient-to-t from-sage-900/40 via-transparent to-transparent"></div>
             </div>
 
@@ -265,26 +290,42 @@
 
         <!-- Couple Names -->
         <div class="z-10 max-w-lg mx-auto">
-            <h1 id="cover-couple-names" class="font-script text-5xl md:text-7xl text-gold mb-2 drop-shadow-lg">Romeo & Juliet</h1>
+            <h1 id="cover-couple-names" class="font-script text-5xl md:text-7xl text-gold mb-2 drop-shadow-lg">Fajar & Rinda</h1>
             <p class="font-serif italic text-cream-100 text-sm md:text-base drop-shadow-md">Akan Melangsungkan Hari Bahagia Pada</p>
-            <p id="cover-date-text" class="font-sans font-semibold text-xs tracking-widest text-white uppercase my-2 drop-shadow-md">Minggu, 31 Desember 2026</p>
+            <p id="cover-date-text" class="font-sans font-semibold text-xs tracking-widest text-white uppercase my-2 drop-shadow-md">Minggu, 29 November 2026</p>
             
             <!-- Countdown Timer on Cover -->
             <div class="flex justify-center gap-3 md:gap-4 my-4">
+                <script>
+                    (function() {
+                        try {
+                            var target = new Date("Nov 29, 2026 09:00:00").getTime();
+                            var diff = target - Date.now();
+                            if (diff > 0) {
+                                var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                var s = Math.floor((diff % (1000 * 60)) / 1000);
+                                var fmt = function(n) { return n < 10 ? '0' + n : n; };
+                                window.__initTimer = { d: fmt(d), h: fmt(h), m: fmt(m), s: fmt(s) };
+                            }
+                        } catch(e) {}
+                    })();
+                </script>
                 <div class="bg-white/90 border border-gold/50 rounded-lg p-2 w-14 md:w-16 shadow-lg backdrop-blur-sm">
-                    <span id="cover-days" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block">00</span>
+                    <span id="cover-days" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block"><script>document.write(window.__initTimer ? window.__initTimer.d : '00');</script><noscript>00</noscript></span>
                     <span class="text-[9px] uppercase font-semibold text-sage-600">Hari</span>
                 </div>
                 <div class="bg-white/90 border border-gold/50 rounded-lg p-2 w-14 md:w-16 shadow-lg backdrop-blur-sm">
-                    <span id="cover-hours" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block">00</span>
+                    <span id="cover-hours" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block"><script>document.write(window.__initTimer ? window.__initTimer.h : '00');</script><noscript>00</noscript></span>
                     <span class="text-[9px] uppercase font-semibold text-sage-600">Jam</span>
                 </div>
                 <div class="bg-white/90 border border-gold/50 rounded-lg p-2 w-14 md:w-16 shadow-lg backdrop-blur-sm">
-                    <span id="cover-mins" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block">00</span>
+                    <span id="cover-mins" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block"><script>document.write(window.__initTimer ? window.__initTimer.m : '00');</script><noscript>00</noscript></span>
                     <span class="text-[9px] uppercase font-semibold text-sage-600">Menit</span>
                 </div>
                 <div class="bg-white/90 border border-gold/50 rounded-lg p-2 w-14 md:w-16 shadow-lg backdrop-blur-sm">
-                    <span id="cover-secs" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block">00</span>
+                    <span id="cover-secs" class="font-serif text-lg md:text-2xl font-bold text-sage-900 block"><script>document.write(window.__initTimer ? window.__initTimer.s : '00');</script><noscript>00</noscript></span>
                     <span class="text-[9px] uppercase font-semibold text-sage-600">Detik</span>
                 </div>
             </div>
@@ -292,7 +333,15 @@
             <!-- Recipient Greeting -->
             <div class="bg-white/80 backdrop-blur-md border border-gold/40 rounded-xl p-3 my-3 shadow-lg">
                 <p class="text-xs text-sage-700 font-medium">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-                <p id="guest-name" class="font-serif font-bold text-base md:text-lg text-sage-900 mt-0.5">Tamu Undangan</p>
+                <p id="guest-name" class="font-serif font-bold text-base md:text-lg text-sage-900 mt-0.5">
+                    <script>
+                        (function() {
+                            var g = window.__guestName;
+                            document.write(g ? g.replace(/[<>&"']/g, '') : 'Tamu Undangan');
+                        })();
+                    </script>
+                    <noscript>Tamu Undangan</noscript>
+                </p>
             </div>
         </div>
 
@@ -385,7 +434,12 @@
                         <div class="absolute -inset-4 rounded-t-full rounded-b-2xl border-2 border-dashed border-gold/50 pointer-events-none animate-spin-slow"></div>
                         
                         <div class="w-60 h-80 md:w-72 md:h-96 arch-frame overflow-hidden shadow-2xl border-4 border-white relative group">
-                            <img id="groom-img" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80" alt="Romeo Montague" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            <img id="groom-img" alt="Fajar Taufik Hidayat" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            <script>
+                                if (window.weddingData && window.weddingData.groom && window.weddingData.groom.photo) {
+                                    document.getElementById('groom-img').src = window.weddingData.groom.photo;
+                                }
+                            </script>
                             <div class="absolute inset-0 bg-gradient-to-t from-sage-900/40 via-transparent to-transparent"></div>
                         </div>
 
@@ -395,11 +449,11 @@
                         </div>
                     </div>
 
-                    <h3 id="groom-name" class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Romeo Montague, S.T.</h3>
+                    <h3 id="groom-name" class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Fajar Taufik Hidayat</h3>
                     <p class="font-serif font-semibold text-sage-900 text-lg mb-3">Putra Pertama</p>
                     <p class="font-sans text-xs md:text-sm text-gray-600 leading-relaxed max-w-xs">
-                        Putra dari Bapak <strong id="groom-father">Lord Montague</strong><br>
-                        & Ibu <strong id="groom-mother">Lady Montague</strong>
+                        Putra dari Bapak <strong id="groom-father">Didi Soetardi</strong><br>
+                        & Ibu <strong id="groom-mother">cucu Nurmala</strong>
                     </p>
                 </div>
 
@@ -410,7 +464,12 @@
                         <div class="absolute -inset-4 rounded-t-full rounded-b-2xl border-2 border-dashed border-gold/50 pointer-events-none"></div>
                         
                         <div class="w-60 h-80 md:w-72 md:h-96 arch-frame overflow-hidden shadow-2xl border-4 border-white relative group">
-                            <img id="bride-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Juliet Capulet" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            <img id="bride-img" alt="Rinda Nursila" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                            <script>
+                                if (window.weddingData && window.weddingData.bride && window.weddingData.bride.photo) {
+                                    document.getElementById('bride-img').src = window.weddingData.bride.photo;
+                                }
+                            </script>
                             <div class="absolute inset-0 bg-gradient-to-t from-sage-900/40 via-transparent to-transparent"></div>
                         </div>
 
@@ -420,11 +479,11 @@
                         </div>
                     </div>
 
-                    <h3 id="bride-name" class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Juliet Capulet, S.Ked</h3>
+                    <h3 id="bride-name" class="font-script text-4xl md:text-5xl text-gold-dark mb-1">Rinda Nursila</h3>
                     <p class="font-serif font-semibold text-sage-900 text-lg mb-3">Putri Keempat</p>
                     <p class="font-sans text-xs md:text-sm text-gray-600 leading-relaxed max-w-xs">
-                        Putri dari Bapak <strong id="bride-father">Lord Capulet</strong><br>
-                        & Ibu <strong id="bride-mother">Lady Capulet</strong>
+                        Putri dari Bapak <strong id="bride-father">Didi Soetardi</strong><br>
+                        & Ibu <strong id="bride-mother">cucu Nurmala</strong>
                     </p>
                 </div>
 
@@ -466,27 +525,27 @@
                     <div class="space-y-3 font-sans text-sm text-gray-700 mb-6">
                         <p class="flex items-center justify-center gap-2 font-semibold text-sage-800">
                             <i class="far fa-calendar-alt text-gold"></i>
-                            <span id="akad-date">Minggu, 31 Desember 2026</span>
+                            <span id="akad-date">Minggu, 29 November 2026</span>
                         </p>
                         <p class="flex items-center justify-center gap-2">
                             <i class="far fa-clock text-gold"></i>
-                            <span id="akad-time">Pukul 08.00 WIB - 10.00 WIB</span>
+                            <span id="akad-time">Pukul 09.00 WIB - 10.00 WIB</span>
                         </p>
                         <p class="flex items-center justify-center gap-2 text-xs text-gray-500">
                             <i class="fas fa-map-marker-alt text-gold"></i>
-                            <span id="akad-location">Masjid Agung Al-Barkah</span>
+                            <span id="akad-location">Kp. Walahir</span>
                         </p>
                         <p class="text-xs text-gray-500 max-w-xs mx-auto">
-                            <span id="akad-address">Jl. Veteran No. 46, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi</span>
+                            <span id="akad-address">kp. Walahir RT 01 RW 13 kec Paseh</span>
                         </p>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a id="akad-maps-link" href="https://maps.google.com" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
+                        <a id="akad-maps-link" href="https://maps.app.goo.gl/NoiukVo2AKbBWwXU9?g_st=ac" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
                             <i class="fas fa-location-arrow text-gold-light"></i>
                             Google Maps
                         </a>
-                        <button onclick="addToCalendar('Akad Nikah Romeo & Juliet', 'Masjid Agung Al-Barkah Bekasi', '2026-12-31T08:00:00', '2026-12-31T10:00:00')" class="inline-flex items-center justify-center gap-2 bg-cream-100 hover:bg-gold hover:text-white text-sage-800 font-sans text-xs font-semibold py-2.5 px-5 rounded-full border border-gold/40 transition">
+                        <button onclick="addToCalendar('Akad Nikah Fajar & Rinda', 'Kp. Walahir', '2026-11-29T09:00:00', '2026-11-29T10:00:00')" class="inline-flex items-center justify-center gap-2 bg-cream-100 hover:bg-gold hover:text-white text-sage-800 font-sans text-xs font-semibold py-2.5 px-5 rounded-full border border-gold/40 transition">
                             <i class="far fa-calendar-plus"></i>
                             Ingatkan Saya
                         </button>
@@ -509,27 +568,27 @@
                     <div class="space-y-3 font-sans text-sm text-gray-700 mb-6">
                         <p class="flex items-center justify-center gap-2 font-semibold text-sage-800">
                             <i class="far fa-calendar-alt text-gold"></i>
-                            <span id="resepsi-date">Minggu, 31 Desember 2026</span>
+                            <span id="resepsi-date">Minggu, 29 November 2026</span>
                         </p>
                         <p class="flex items-center justify-center gap-2">
                             <i class="far fa-clock text-gold"></i>
-                            <span id="resepsi-time">Pukul 11.00 WIB - 14.00 WIB</span>
+                            <span id="resepsi-time">Pukul 11.00 WIB - 16.00 WIB</span>
                         </p>
                         <p class="flex items-center justify-center gap-2 text-xs text-gray-500">
                             <i class="fas fa-building text-gold"></i>
-                            <span id="resepsi-location">Grand Ballroom Hotel Santika</span>
+                            <span id="resepsi-location">Kp. Walahir</span>
                         </p>
                         <p class="text-xs text-gray-500 max-w-xs mx-auto">
-                            <span id="resepsi-address">Jl. Ahmad Yani No. 1, Ahmad Yani Center, Kota Bekasi</span>
+                            <span id="resepsi-address">kp. Walahir RT 01 RW 13 kec Paseh</span>
                         </p>
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a id="resepsi-maps-link" href="https://maps.google.com" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
+                        <a id="resepsi-maps-link" href="https://maps.app.goo.gl/NoiukVo2AKbBWwXU9?g_st=ac" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-2.5 px-5 rounded-full transition shadow hover:shadow-md">
                             <i class="fas fa-location-arrow text-gold-light"></i>
                             Google Maps
                         </a>
-                        <button onclick="addToCalendar('Resepsi Pernikahan Romeo & Juliet', 'Grand Ballroom Hotel Santika Bekasi', '2026-12-31T11:00:00', '2026-12-31T14:00:00')" class="inline-flex items-center justify-center gap-2 bg-cream-100 hover:bg-gold hover:text-white text-sage-800 font-sans text-xs font-semibold py-2.5 px-5 rounded-full border border-gold/40 transition">
+                        <button onclick="addToCalendar('Resepsi Pernikahan Fajar & Rinda', 'Kp. Walahir', '2026-11-29T11:00:00', '2026-11-29T16:00:00')" class="inline-flex items-center justify-center gap-2 bg-cream-100 hover:bg-gold hover:text-white text-sage-800 font-sans text-xs font-semibold py-2.5 px-5 rounded-full border border-gold/40 transition">
                             <i class="far fa-calendar-plus"></i>
                             Ingatkan Saya
                         </button>
@@ -610,26 +669,26 @@
                 </p>
             </div>
 
-            <div id="gift-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div id="gift-cards-container" class="flex justify-center max-w-md mx-auto">
                 
                 <!-- BANK 1 CARD -->
-                <div id="bank1-card" class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
+                <div id="bank1-card" class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden w-full">
                     <div class="flex justify-center mb-4">
-                        <div id="bank1-badge" class="bg-blue-900 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
-                            BCA
+                        <div id="bank1-badge" class="bg-emerald-600 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
+                            Gopay
                         </div>
                     </div>
-                    <p id="bank1-number-text" class="font-mono text-2xl font-bold text-sage-900 tracking-wider mb-1">123 456 7890</p>
-                    <p id="bank1-owner-text" class="font-sans text-xs text-gray-500 uppercase font-semibold mb-6">a.n Romeo Montague</p>
+                    <p id="bank1-number-text" class="font-mono text-2xl font-bold text-sage-900 tracking-wider mb-1">085788826551</p>
+                    <p id="bank1-owner-text" class="font-sans text-xs text-gray-500 uppercase font-semibold mb-6">a.n Fajar Taufik Hidayat</p>
                     
                     <button id="bank1-copy-btn" onclick="copyRekeningDynamic(0)" class="w-full bg-sage-700 hover:bg-sage-900 text-white font-sans text-xs font-semibold py-3 px-6 rounded-full transition shadow flex items-center justify-center gap-2">
                         <i class="far fa-copy text-gold-light"></i>
-                        <span id="bank1-btn-text">Salin No. Rekening BCA</span>
+                        <span id="bank1-btn-text">Salin No. Rekening Gopay</span>
                     </button>
                 </div>
 
                 <!-- BANK 2 CARD -->
-                <div id="bank2-card" class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden">
+                <div id="bank2-card" class="reveal glass-card rounded-3xl p-8 border border-gold/30 shadow-lg text-center relative overflow-hidden hidden">
                     <div class="flex justify-center mb-4">
                         <div id="bank2-badge" class="bg-yellow-600 text-white font-extrabold italic py-1 px-5 rounded-md text-sm tracking-widest shadow">
                             MANDIRI
@@ -725,7 +784,7 @@
 
                 <div>
                     <p class="text-xs uppercase tracking-widest text-gold mb-1">Kami Yang Berbahagia,</p>
-                    <h2 id="footer-couple-names" class="font-script text-5xl text-gold-light">Romeo & Juliet</h2>
+                    <h2 id="footer-couple-names" class="font-script text-5xl text-gold-light">Fajar & Rinda</h2>
                     <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-2">Beserta Keluarga Besar Kedua Mempelai</p>
                 </div>
 
